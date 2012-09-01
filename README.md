@@ -4,14 +4,14 @@ LG Optimus Black device folder for build Android 4.0.x
 
 Download:
 ---------
-- mkdir blackjb
-- cd blackjb
+- mkdir blackics
+- cd blackics
 - repo init -u git://github.com/paul-xxx/android.git -b ics
 - repo sync -j4
 
 Update source:
 --------------
-- cd blackjb
+- cd blackics
 - repo sync -j4
 
 Build:
