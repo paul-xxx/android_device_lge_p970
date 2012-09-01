@@ -1,0 +1,123 @@
+# Copyright (C) 2012 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Include headers
+TARGET_SPECIFIC_HEADER_PATH := device/lge/p970/include
+TARGET_BOARD_PLATFORM := omap3
+
+# inherit from the proprietary version
+-include vendor/lge/p970/BoardConfigVendor.mk
+
+# Board configuration
+#
+TARGET_NO_BOOTLOADER := true
+TARGET_CPU_ABI := armeabi-v7a
+TARGET_CPU_ABI2 := armeabi
+TARGET_ARCH_VARIANT := armv7-a-neon
+ARCH_ARM_HAVE_TLS_REGISTER := true
+OMAP_ENHANCEMENT := true
+BOARD_GLOBAL_CFLAGS += -DCHARGERMODE_CMDLINE_NAME='"rs"' -DCHARGERMODE_CMDLINE_VALUE='"c"'
+
+# Kernel/Bootloader machine name
+#
+#TARGET_PROVIDES_INIT_RC := true
+#TARGET_PROVIDES_INIT_TARGET_RC := true
+BOARD_KERNEL_CMDLINE := 
+BOARD_KERNEL_BASE := 0x80000000
+BOARD_PAGE_SIZE := 0x00000800
+TARGET_PREBUILT_KERNEL := device/lge/p970/kernel
+TARGET_BOOTLOADER_BOARD_NAME := p970
+TARGET_NO_BOOTLOADER := true
+BOARD_HAS_NO_SELECT_BUTTON := true
+
+# HW Graphcis
+BOARD_EGL_CFG := device/lge/p970/egl.cfg
+OMAP3_GL := false
+USE_OPENGL_RENDERER := true
+
+# WLAN supplicant v8
+WPA_SUPPLICANT_VERSION           := VER_0_8_X
+BOARD_WPA_SUPPLICANT_DRIVER      := WEXT
+BOARD_WLAN_DEVICE                := bcm4329
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wext
+WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wireless.ko"
+WIFI_DRIVER_FW_PATH_STA          := "/vendor/firmware/fw_bcm4329.bin"
+WIFI_DRIVER_FW_PATH_AP           := "/vendor/firmware/fw_bcm4329_apsta.bin"
+WIFI_DRIVER_MODULE_NAME          :=  "wireless"
+WIFI_DRIVER_MODULE_ARG           :=  "iface_name=wlan0 firmware_path=/vendor/firmware/fw_bcm4329.bin nvram_path=/system/etc/wifi/nvram.txt config_path=/data/misc/wifi/config"
+
+# WLAN supplicant v6
+#BOARD_WLAN_DEVICE               := bcm4329
+#WIFI_DRIVER_FW_STA_PATH         := "/system/etc/wifi/fw_bcm4329.bin"
+#WIFI_DRIVER_FW_AP_PATH          := "/system/etc/wifi/fw_bcm4329_ap.bin"
+#WIFI_DRIVER_MODULE_NAME         := "wireless"
+#WIFI_DRIVER_MODULE_PATH         := "/system/lib/modules/wireless.ko"
+#WIFI_DRIVER_MODULE_ARG          := "firmware_path=/system/etc/wifi/fw_bcm4329.bin nvram_path=/system/etc/wifi/nvram.txt config_path=/data/misc/wifi/config"
+#WPA_SUPPLICANT_VERSION          := VER_0_6_X
+#WIFI_DRIVER_HAS_LGE_SOFTAP      := true
+#BOARD_WPA_SUPPLICANT_DRIVER	:= WEXT
+#BOARD_WEXT_NO_COMBO_SCAN	:= true
+
+# Bluetooth
+BOARD_HAVE_BLUETOOTH := true
+BOARD_HAVE_BLUETOOTH_BCM := true
+
+# Touchscreen
+BOARD_USE_LEGACY_TOUCHSCREEN := true
+
+# USB
+BOARD_USE_USB_MASS_STORAGE_SWITCH := true
+BOARD_MASS_STORAGE_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
+BOARD_MTP_DEVICE := "/dev/mtp"
+
+# MultiMedia defines
+#TARGET_PROVIDES_LIBAUDIO := true
+#BOARD_USES_AUDIO_LEGACY := true
+#BOARD_USES_TI_OMAP_MODEM_AUDIO := true
+BUILD_FM_RADIO := true
+#USE_CAMERA_STUB := true
+BOARD_USES_GENERIC_AUDIO := true
+#BOARD_USES_ALSA_AUDIO := true
+BUILD_WITH_ALSA_UTILS := true
+BOARD_USES_TI_CAMERA_HAL := true
+HARDWARE_OMX := true
+#FW3A := true
+#ICAP := true
+#IMAGE_PROCESSING_PIPELINE := true
+#BOARD_CAMERA_FORCE_PREVIEWFORMAT := "yuv422i-yuyv"
+#BOARD_USES_CAMERAID_PARAM := "video-input"
+BOARD_OMAP3_WITH_FFC := true
+BOARD_HAS_OMAP3_FW3A_LIBCAMERA := true
+ifdef HARDWARE_OMX
+OMX_JPEG := true
+OMX_VENDOR := ti
+OMX_VENDOR_INCLUDES := \
+   hardware/ti/omx/system/src/openmax_il/omx_core/inc \
+   hardware/ti/omx/image/src/openmax_il/jpeg_enc/inc
+OMX_VENDOR_WRAPPER := TI_OMX_Wrapper
+BOARD_OPENCORE_LIBRARIES := libOMX_Core
+BOARD_OPENCORE_FLAGS := -DHARDWARE_OMX=1
+BOARD_CAMERA_LIBRARIES := libcamera
+endif
+
+ifdef OMAP_ENHANCEMENT
+COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT -DTARGET_OMAP3
+endif
+
+# Partitions configuration
+TARGET_USERIMAGES_USE_EXT4 := true
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 665681920
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 1170259968
+BOARD_FLASH_BLOCK_SIZE := 131072
+
