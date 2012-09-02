@@ -1,6 +1,6 @@
 Black Jelly Bean Project
 ========================
-LG Optimus Black device folder for build Android 4.0.x
+LG Optimus Black device folder for build Android 4.1.x
 
 Download:
 ---------
