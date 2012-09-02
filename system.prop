@@ -1,18 +1,22 @@
-# system.prop for p970
-# This is GENERIC Product for testing
 #
+# system.prop for p970
+#
+
+# Radio Interface
 rild.libpath=/system/lib/libreference-ril.so
 rild.libargs=-d /dev/ttyS0
+
+# LCD
 ro.sf.lcd_density=240
-com.ti.omap_enhancement=true
-opencore.asmd=1
-keyguard.no_require_sim=1
-wifi.interface=wlan0
-alsa.mixer.playback.master=DAC2 Analog
-alsa.mixer.capture.master=Analog
-dalvik.vm.heapgrowthlimit=64m
-dalvik.vm.heapsize=64m
 ro.opengles.version=131072
 
-# Define JPEG codec to load. (Set libskiahw with 1 & Set ARM with 0)
-jpeg.libskiahw.decoder.enable=1
+# Dalvik VM optimisation
+dalvik.vm.heapgrowthlimit=64m
+dalvik.vm.heapsize=64m
+
+# ALSA audio config
+alsa.mixer.playback.master=DAC2 Analog
+alsa.mixer.capture.master=Analog
+
+
+
