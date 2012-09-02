@@ -46,28 +46,17 @@ BOARD_EGL_CFG := device/lge/p970/egl.cfg
 OMAP3_GL := false
 USE_OPENGL_RENDERER := true
 
-# WLAN supplicant v8
-WPA_SUPPLICANT_VERSION           := VER_0_8_X
-BOARD_WPA_SUPPLICANT_DRIVER      := WEXT
-BOARD_WLAN_DEVICE                := bcm4329
-BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wext
-WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wireless.ko"
-WIFI_DRIVER_FW_PATH_STA          := "/vendor/firmware/fw_bcm4329.bin"
-WIFI_DRIVER_FW_PATH_AP           := "/vendor/firmware/fw_bcm4329_apsta.bin"
-WIFI_DRIVER_MODULE_NAME          :=  "wireless"
-WIFI_DRIVER_MODULE_ARG           :=  "iface_name=wlan0 firmware_path=/vendor/firmware/fw_bcm4329.bin nvram_path=/system/etc/wifi/nvram.txt config_path=/data/misc/wifi/config"
-
-# WLAN supplicant v6
-#BOARD_WLAN_DEVICE               := bcm4329
-#WIFI_DRIVER_FW_STA_PATH         := "/system/etc/wifi/fw_bcm4329.bin"
-#WIFI_DRIVER_FW_AP_PATH          := "/system/etc/wifi/fw_bcm4329_ap.bin"
-#WIFI_DRIVER_MODULE_NAME         := "wireless"
-#WIFI_DRIVER_MODULE_PATH         := "/system/lib/modules/wireless.ko"
-#WIFI_DRIVER_MODULE_ARG          := "firmware_path=/system/etc/wifi/fw_bcm4329.bin nvram_path=/system/etc/wifi/nvram.txt config_path=/data/misc/wifi/config"
-#WPA_SUPPLICANT_VERSION          := VER_0_6_X
-#WIFI_DRIVER_HAS_LGE_SOFTAP      := true
-#BOARD_WPA_SUPPLICANT_DRIVER	:= WEXT
-#BOARD_WEXT_NO_COMBO_SCAN	:= true
+# WLAN
+BOARD_WLAN_DEVICE		:= bcm4329
+WIFI_DRIVER_FW_STA_PATH		:= "/system/etc/wifi/fw_bcm4329.bin"
+WIFI_DRIVER_FW_AP_PATH		:= "/system/etc/wifi/fw_bcm4329_ap.bin"
+WIFI_DRIVER_MODULE_NAME		:= "wireless"
+WIFI_DRIVER_MODULE_PATH		:= "/system/lib/modules/wireless.ko"
+WIFI_DRIVER_MODULE_ARG		:= "firmware_path=/system/etc/wifi/fw_bcm4329.bin nvram_path=/system/etc/wifi/nvram.txt config_path=/data/misc/wifi/config"
+WPA_SUPPLICANT_VERSION		:= VER_0_6_X
+WIFI_DRIVER_HAS_LGE_SOFTAP	:= true
+BOARD_WPA_SUPPLICANT_DRIVER	:= WEXT
+BOARD_WEXT_NO_COMBO_SCAN	:= true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
@@ -84,14 +73,11 @@ BOARD_MTP_DEVICE := "/dev/mtp"
 # MultiMedia defines
 #TARGET_PROVIDES_LIBAUDIO := true
 #BOARD_USES_AUDIO_LEGACY := true
-#BOARD_USES_TI_OMAP_MODEM_AUDIO := true
 BUILD_FM_RADIO := true
 #USE_CAMERA_STUB := true
 BOARD_USES_GENERIC_AUDIO := true
-#BOARD_USES_ALSA_AUDIO := true
-BUILD_WITH_ALSA_UTILS := true
 BOARD_USES_TI_CAMERA_HAL := true
-HARDWARE_OMX := true
+#HARDWARE_OMX := true
 #FW3A := true
 #ICAP := true
 #IMAGE_PROCESSING_PIPELINE := true
