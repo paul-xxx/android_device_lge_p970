@@ -14,9 +14,18 @@
 
 DEVICE_PACKAGE_OVERLAYS := device/lge/p970/overlay
 
+# Initfs
+PRODUCT_COPY_FILES += \
+$(shell test -d device/lge/p970/prebuilt/chargerimages && find device/lge/p970/prebuilt/chargerimages -name '*.rle' -printf '%p:root/chargerimages/%f ') \
+$(shell test -d device/lge/p970/prebuilt && find device/lge/p970/prebuilt -name '*.rc' -printf '%p:root/%f ') \
+    $(LOCAL_PATH)/prebuilt/chargerlogo:root/sbin/chargerlogo \
+    $(LOCAL_PATH)/prebuilt/g-recovery:root/sbin/g-recovery \
+    $(LOCAL_PATH)/prebuilt/ON_480x800_08fps_0000.rle:root/bootimages/ON_480x800_08fps_0000.rle \
+    $(LOCAL_PATH)/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh
+
 # These are the hardware-specific configuration files
-PRODUCT_COPY_FILES := \
-    device/lge/p970/vold.fstab:system/etc/vold.fstab
+PRODUCT_COPY_FILES += \
+    device/lge/p970/prebuilt/vold.fstab:system/etc/vold.fstab
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
@@ -25,9 +34,11 @@ PRODUCT_PACKAGES += \
 
 # Device specific
 PRODUCT_PACKAGES += \
-    hwcomposer.p970 \
+    gralloc.p970 \
     camera.p970 \
-    lights.p970
+    lights.p970 \
+
+#    hwcomposer.p970
 
 # Audio
 PRODUCT_PACKAGES += \
@@ -42,6 +53,9 @@ PRODUCT_PACKAGES += \
 
 # Wifi
 PRODUCT_PACKAGES += wifimac
+
+PRODUCT_COPY_FILES += \
+    device/lge/p970/prebuilt/wlan-precheck:system/bin/wlan-precheck
 
 # Recovery
 PRODUCT_PACKAGES += prb
