@@ -14,6 +14,10 @@
 
 DEVICE_PACKAGE_OVERLAYS := device/lge/p970/overlay
 
+# New APN's
+PRODUCT_COPY_FILES += \
+    device/lge/p970/prebuilt/apns-conf.xml:system/etc/apns-conf.xml
+
 # Initfs
 PRODUCT_COPY_FILES += \
 $(shell test -d device/lge/p970/prebuilt/chargerimages && find device/lge/p970/prebuilt/chargerimages -name '*.rle' -printf '%p:root/chargerimages/%f ') \
@@ -62,7 +66,8 @@ PRODUCT_PACKAGES += prb
 
 # OpenMAX IL configuration
 PRODUCT_COPY_FILES += \
-    device/lge/p970/prebuilt/media_profiles.xml:system/etc/media_profiles.xml
+    device/lge/p970/prebuilt/media_profiles.xml:system/etc/media_profiles.xml \
+    device/lge/p970/prebuilt/policytable.tbl:system/etc/policytable.tbl
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
