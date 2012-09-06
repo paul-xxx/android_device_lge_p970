@@ -14,13 +14,7 @@ ro.telephony.call_ring.multiple=false
 ro.telephony.call_ring.delay=1000
 ro.telephony.call_ring.absent=true
 ro.telephony.ril_class=LGEStarRIL
-wifi.interface=wlan0
-wifi.supplicant_scan_interval=45
 ro.ril.disable.power.collapse=0
-
-# LCD
-ro.sf.lcd_density=240
-ro.opengles.version=131072
 
 # ALSA audio config
 alsa.mixer.playback.master=DAC2 Analog
@@ -38,10 +32,8 @@ media.stagefright.enable-meta=true
 media.stagefright.enable-scan=true
 media.stagefright.enable-http=true
 media.stagefright.enable-rtsp=true
-ro.media.enc.jpeg.quality=100
 
 # Tweaks
 debug.sf.hw=1
 debug.performance.tuning=1
 video.accelerate.hw=1
-ro.kernel.android.checkjni=0
