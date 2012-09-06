@@ -18,18 +18,23 @@ DEVICE_PACKAGE_OVERLAYS := device/lge/p970/overlay
 PRODUCT_COPY_FILES += \
     device/lge/p970/prebuilt/apns-conf.xml:system/etc/apns-conf.xml
 
-# Initfs
+# Prebuilt copy
 PRODUCT_COPY_FILES += \
-$(shell test -d device/lge/p970/prebuilt/chargerimages && find device/lge/p970/prebuilt/chargerimages -name '*.rle' -printf '%p:root/chargerimages/%f ') \
-$(shell test -d device/lge/p970/prebuilt && find device/lge/p970/prebuilt -name '*.rc' -printf '%p:root/%f ') \
-    $(LOCAL_PATH)/prebuilt/chargerlogo:root/sbin/chargerlogo \
-    $(LOCAL_PATH)/prebuilt/g-recovery:root/sbin/g-recovery \
-    $(LOCAL_PATH)/prebuilt/ON_480x800_08fps_0000.rle:root/bootimages/ON_480x800_08fps_0000.rle \
-    $(LOCAL_PATH)/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh
-
-# These are the hardware-specific configuration files
-PRODUCT_COPY_FILES += \
+    device/lge/p970/prebuilt/wlan-precheck:system/bin/wlan-precheck \
+    device/lge/p970/prebuilt/media_profiles.xml:system/etc/media_profiles.xml \
+    device/lge/p970/prebuilt/policytable.tbl:system/etc/policytable.tbl \
     device/lge/p970/prebuilt/vold.fstab:system/etc/vold.fstab
+
+# Wlan copy
+PRODUCT_COPY_FILES += \
+    device/lge/p970/prebuilt/wlan/dhcpcd:system/bin/dhcpcd \
+    device/lge/p970/prebuilt/wlan/fw_bcm4329.bin:system/etc/wlan/fw_bcm4329.bin \
+    device/lge/p970/prebuilt/wlan/fw_bcm4329_ap.bin:system/etc/wlan/fw_bcm4329_ap.bin \
+    device/lge/p970/prebuilt/wlan/nvram.txt:system/etc/wlan/nvram.txt \
+    device/lge/p970/prebuilt/wlan/scsi_wait_scan.ko:system/lib/modules/scsi_wait_scan.ko \
+    device/lge/p970/prebuilt/wlan/wireless.ko:system/lib/modules/wireless.ko \
+    device/lge/p970/prebuilt/wlan/firmware/fw_bcm4329.bin:system/vendor/firmware/fw_bcm4329.bin \
+    device/lge/p970/prebuilt/wlan/firmware/fw_bcm4329_apsta.bin:system/vendor/firmware/fw_bcm4329_apsta.bin
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
@@ -38,36 +43,21 @@ PRODUCT_PACKAGES += \
 
 # Device specific
 PRODUCT_PACKAGES += \
+    audio.a2dp.default \
+    audio.usb.default \
     gralloc.p970 \
     camera.p970 \
     lights.p970 \
-
+    hcitool \
+    wifimac \
+    prb
 #    hwcomposer.p970
-
-# Audio
-PRODUCT_PACKAGES += \
-    audio.a2dp.default \
-    audio.usb.default
 
 # Misc other modules
 PRODUCT_PACKAGES += \
     libomap_mm_library_jni \
     libRS \
     librs_jni
-
-# Wifi
-PRODUCT_PACKAGES += wifimac
-
-PRODUCT_COPY_FILES += \
-    device/lge/p970/prebuilt/wlan-precheck:system/bin/wlan-precheck
-
-# Recovery
-PRODUCT_PACKAGES += prb
-
-# OpenMAX IL configuration
-PRODUCT_COPY_FILES += \
-    device/lge/p970/prebuilt/media_profiles.xml:system/etc/media_profiles.xml \
-    device/lge/p970/prebuilt/policytable.tbl:system/etc/policytable.tbl
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
@@ -94,13 +84,27 @@ PRODUCT_COPY_FILES += \
 # be reachable from resources or other mechanisms.
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0 \
-    com.ti.omap_enhancement=true
+    wifi.supplicant_scan_interval=45 \
+    ro.sf.lcd_density=240 \
+    ro.opengles.version=131072 \
+    com.ti.omap_enhancement=true \
+    ro.media.enc.jpeg.quality=100 \
+    ro.kernel.android.checkjni=0
+
+# Initfs
+PRODUCT_COPY_FILES += \
+$(shell test -d device/lge/p970/prebuilt/chargerimages && find device/lge/p970/prebuilt/chargerimages -name '*.rle' -printf '%p:root/chargerimages/%f ') \
+$(shell test -d device/lge/p970/prebuilt && find device/lge/p970/prebuilt -name '*.rc' -printf '%p:root/%f ') \
+    $(LOCAL_PATH)/prebuilt/chargerlogo:root/sbin/chargerlogo \
+    $(LOCAL_PATH)/prebuilt/g-recovery:root/sbin/g-recovery \
+    $(LOCAL_PATH)/prebuilt/ON_480x800_08fps_0000.rle:root/bootimages/ON_480x800_08fps_0000.rle \
+    $(LOCAL_PATH)/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh
 
 # See comment at the top of this file. This is where the other
 # half of the device-specific product definition file takes care
 # of the aspects that require proprietary drivers that aren't
 # commonly available
-#$(call inherit-product-if-exists, vendor/lge/p970/p970-vendor.mk)
+$(call inherit-product-if-exists, vendor/lge/p970/p970-vendor.mk)
 
 # Include vendor non-open source blobs
-#$(call inherit-product-if-exists, vendor/lge/p970/p970-vendor-blobs.mk)
+$(call inherit-product-if-exists, vendor/lge/p970/p970-vendor-blobs.mk)
