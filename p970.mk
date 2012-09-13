@@ -14,23 +14,20 @@
 
 DEVICE_PACKAGE_OVERLAYS := device/lge/p970/overlay
 
-# New APN's
-PRODUCT_COPY_FILES += \
-    device/lge/p970/prebuilt/apns-conf.xml:system/etc/apns-conf.xml
-
 # Prebuilt copy
 PRODUCT_COPY_FILES += \
     device/lge/p970/prebuilt/wlan-precheck:system/bin/wlan-precheck \
+    device/lge/p970/prebuilt/audio_policy.conf:system/etc/audio_policy.conf \
+    device/lge/p970/prebuilt/media_codecs.xml:system/etc/media_codecs.xml \
     device/lge/p970/prebuilt/media_profiles.xml:system/etc/media_profiles.xml \
-    device/lge/p970/prebuilt/policytable.tbl:system/etc/policytable.tbl \
     device/lge/p970/prebuilt/vold.fstab:system/etc/vold.fstab
 
 # Wlan copy
 PRODUCT_COPY_FILES += \
     device/lge/p970/prebuilt/wlan/dhcpcd:system/bin/dhcpcd \
-    device/lge/p970/prebuilt/wlan/fw_bcm4329.bin:system/etc/wlan/fw_bcm4329.bin \
-    device/lge/p970/prebuilt/wlan/fw_bcm4329_ap.bin:system/etc/wlan/fw_bcm4329_ap.bin \
-    device/lge/p970/prebuilt/wlan/nvram.txt:system/etc/wlan/nvram.txt \
+    device/lge/p970/prebuilt/wlan/fw_bcm4329.bin:system/etc/wifi/fw_bcm4329.bin \
+    device/lge/p970/prebuilt/wlan/fw_bcm4329_ap.bin:system/etc/wifi/fw_bcm4329_ap.bin \
+    device/lge/p970/prebuilt/wlan/nvram.txt:system/etc/wifi/nvram.txt \
     device/lge/p970/prebuilt/wlan/scsi_wait_scan.ko:system/lib/modules/scsi_wait_scan.ko \
     device/lge/p970/prebuilt/wlan/wireless.ko:system/lib/modules/wireless.ko \
     device/lge/p970/prebuilt/wlan/firmware/fw_bcm4329.bin:system/vendor/firmware/fw_bcm4329.bin \
@@ -45,17 +42,14 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
     audio.usb.default \
-    gralloc.p970 \
     camera.p970 \
     lights.p970 \
+    hwcomposer.default \
     hcitool \
-    wifimac \
-    prb
-#    hwcomposer.p970
+    wifimac
 
 # Misc other modules
 PRODUCT_PACKAGES += \
-    libomap_mm_library_jni \
     libRS \
     librs_jni
 
@@ -91,14 +85,20 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.media.enc.jpeg.quality=100 \
     ro.kernel.android.checkjni=0
 
+# Allow debug in GB ramdisk
+ADDITIONAL_DEFAULT_PROPERTIES += ro.secure=0
+
 # Initfs
 PRODUCT_COPY_FILES += \
-$(shell test -d device/lge/p970/prebuilt/chargerimages && find device/lge/p970/prebuilt/chargerimages -name '*.rle' -printf '%p:root/chargerimages/%f ') \
-$(shell test -d device/lge/p970/prebuilt && find device/lge/p970/prebuilt -name '*.rc' -printf '%p:root/%f ') \
-    $(LOCAL_PATH)/prebuilt/chargerlogo:root/sbin/chargerlogo \
-    $(LOCAL_PATH)/prebuilt/g-recovery:root/sbin/g-recovery \
-    $(LOCAL_PATH)/prebuilt/ON_480x800_08fps_0000.rle:root/bootimages/ON_480x800_08fps_0000.rle \
-    $(LOCAL_PATH)/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh
+$(shell test -d device/lge/p970/prebuilt/initramfs/chargerimages && find device/lge/p970/prebuilt/initramfs/chargerimages -name '*.rle' -printf '%p:root/chargerimages/%f ') \
+    $(LOCAL_PATH)/prebuilt/initramfs/bootimages/ON_480x800_08fps_0000.rle:root/bootimages/ON_480x800_08fps_0000.rle \
+    $(LOCAL_PATH)/prebuilt/initramfs/sbin/chargerlogo:root/sbin/chargerlogo \
+    $(LOCAL_PATH)/prebuilt/initramfs/default.prop:root/default.prop \
+    $(LOCAL_PATH)/prebuilt/initramfs/init:root/init \
+    $(LOCAL_PATH)/prebuilt/initramfs/init.lge.rc:root/init.lge.rc \
+    $(LOCAL_PATH)/prebuilt/initramfs/init.rc:root/init.rc \
+    $(LOCAL_PATH)/prebuilt/initramfs/testleds.sh:root/testleds.sh \
+    $(LOCAL_PATH)/prebuilt/initramfs/ueventd.lge.rc:root/ueventd.lge.rc
 
 # See comment at the top of this file. This is where the other
 # half of the device-specific product definition file takes care
