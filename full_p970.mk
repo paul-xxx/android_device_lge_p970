@@ -24,6 +24,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full.mk)
 $(call inherit-product, device/lge/p970/p970.mk)
 
+# P970 uses high-density artwork where available
+PRODUCT_LOCALES += hdpi
+
 # Discard inherited values and use our own instead.
 PRODUCT_NAME := full_p970
 PRODUCT_DEVICE := p970
