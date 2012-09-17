@@ -1,4 +1,4 @@
-# Copyright (C) 2011 The CyanogenMod project
+# Copyright (C) 2012 The CyanogenMod project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_MODULE_TAGS := optional
-
 LOCAL_SRC_FILES := getmac.c
 
 LOCAL_PRELINK_MODULE := false
 
 LOCAL_MODULE := wifimac
+LOCAL_MODULE_TAGS := optional
 
 include $(BUILD_EXECUTABLE)
