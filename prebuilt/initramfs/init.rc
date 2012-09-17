@@ -5,6 +5,8 @@
 #
 
 import /init.lge.rc
+#import /init.usb.rc
+#import /init.trace.rc
 
 on early-init
     # Set init and its forked children's oom_adj.
@@ -18,6 +20,8 @@ sysclktz 0
 
 loglevel 3
 
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "performance"
+
 # setup the global environment
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
     export LD_LIBRARY_PATH /vendor/lib:/system/lib
@@ -26,27 +30,45 @@ loglevel 3
     export ANDROID_ROOT /system
     export ANDROID_ASSETS /system/app
     export ANDROID_DATA /data
+    export DOWNLOAD_CACHE /cache/download
+    export EXTERNAL_STORAGE /mnt/sdcard
     export ASEC_MOUNTPOINT /mnt/asec
     export LOOP_MOUNTPOINT /mnt/obb
+    export SD_EXT_DIRECTORY /sd-ext
     export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar
+    export DSP_PATH /system/lib/dsp
+    export DEFAULT_BASEIMAGE /system/lib/dsp/baseimage.dof
+    export QOSDYN_FILE /system/lib/dsp/qosdyn_3430.dll64P
 
 # Backward compatibility
+    symlink /system/bin /bin
     symlink /system/etc /etc
+    symlink /system/lib /lib
     symlink /sys/kernel/debug /d
 
 # Right now vendor lives on the same filesystem as system,
 # but someday that may change.
     symlink /system/vendor /vendor
 
+# create mountpoints
+    mkdir /mnt 0775 root system
+    mkdir /mnt/sdcard 0000 system system
+
 # Create cgroup mount point for cpu accounting
     mkdir /acct
     mount cgroup none /acct cpuacct
     mkdir /acct/uid
 
+# Backwards Compat - XXX: Going away in G*
+    symlink /mnt/sdcard /sdcard
+
     mkdir /system
     mkdir /data 0771 system system
     mkdir /cache 0771 system cache
     mkdir /config 0500 root root
+
+    mkdir /sqlite_stmt_journals 01777 root root
+    mount tmpfs tmpfs /sqlite_stmt_journals size=4m
 
     # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
@@ -66,6 +88,8 @@ loglevel 3
     mkdir /mnt/obb 0700 root system
     mount tmpfs tmpfs /mnt/obb mode=0755,gid=1000
 
+    mkdir /sd-ext 0771 system system
+
     write /proc/sys/kernel/panic_on_oops 1
     write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4
@@ -73,12 +97,6 @@ loglevel 3
     write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
-    write /proc/sys/kernel/randomize_va_space 2
-    write /proc/sys/kernel/kptr_restrict 2
-    write /proc/sys/kernel/dmesg_restrict 1
-    write /proc/sys/vm/mmap_min_addr 32768
-    write /proc/sys/kernel/sched_rt_runtime_us 950000
-    write /proc/sys/kernel/sched_rt_period_us 1000000
 
 # Create cgroup mount points for process groups
     mkdir /dev/cpuctl
@@ -105,12 +123,24 @@ loglevel 3
     write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_runtime_us 700000
     write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_period_us 1000000
 
+    mkdir /dvp 0771 system system
+    mkdir /dvp/hwkey 0771 system system
+    mkdir /dvp/userdata 0771 system system
+
+    chown system system /sys/class/leds/lcd-backlight/als
+
+    # Increase readahead buffers on MMC devices
+    write /sys/block/mmcblk0/bdi/read_ahead_kb 1024
+    write /sys/block/mmcblk1/bdi/read_ahead_kb 1024
+
 on fs
-# mount emmc partitions
+# mount mtd partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount ext4 /dev/block/mmcblk0p8 /system
-    mount ext4 /dev/block/mmcblk0p8 /system ro remount
-    mount ext4 /dev/block/mmcblk0p9 /data nosuid nodev
+    mount ext4 /dev/block/mmcblk0p8 /system ro noatime barrier=1 wait
+    # We chown/chmod /data again so because mount is run as root + defaults
+    mount ext4 /dev/block/mmcblk0p9 /data nosuid nodev noatime barrier=1 wait
+    chown system system /data
+    chmod 0771 /data
 
     mount ext3 /dev/block/mmcblk0p6 /dvp/hwkey nosuid nodev
     chown system system /dvp/hwkey
@@ -183,20 +213,21 @@ on post-fs
     mkdir /data/misc/bluetoothd 0770 bluetooth bluetooth
     mkdir /data/misc/bluetooth 0770 system system
     mkdir /data/misc/keystore 0700 keystore keystore
-    mkdir /data/misc/vpn 0770 system system
+    mkdir /data/misc/keychain 0771 system system
+    mkdir /data/misc/vpn 0770 system vpn
     mkdir /data/misc/systemkeys 0700 system system
-    mkdir /data/misc/vpn/profiles 0770 system system
     # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
     chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/local 0771 shell shell
     mkdir /data/local/tmp 0771 shell shell
-    mkdir /data/local/download 0771 system cache
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system
+    mkdir /data/app-asec 0700 root root
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
+    mkdir /data/ssh 0750 root shell
 
     mkdir /cache/download 0771 system cache
 
@@ -233,14 +264,10 @@ on post-fs
 
     chmod 0777 /data/misc/wifi/config_mac
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
-    mkdir /data/misc/dhcp 0777 dhcp dhcp
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
     setprop wifi.supplicant_scan_interval 20
     setprop wifi.interface wlan0
-
-    # create data/drm directory
-    mkdir /data/drm 0774 drm drm
-    chown drm drm /data/drm
-    chmod 0774 /data/drm
 
 on boot
 # basic network init
@@ -251,39 +278,18 @@ on boot
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
 
-# Define the oom_adj values for the classes of processes that can be
-# killed by the kernel.  These are used in ActivityManagerService.
-    setprop ro.FOREGROUND_APP_ADJ 0
-    setprop ro.VISIBLE_APP_ADJ 1
-    setprop ro.PERCEPTIBLE_APP_ADJ 2
-    setprop ro.HEAVY_WEIGHT_APP_ADJ 3
-    setprop ro.SECONDARY_SERVER_ADJ 4
-    setprop ro.BACKUP_APP_ADJ 5
-    setprop ro.HOME_APP_ADJ 6
-    setprop ro.HIDDEN_APP_MIN_ADJ 7
-    setprop ro.EMPTY_APP_ADJ 15
+# Write value must be consistent with the above properties.
+# Note that the driver only supports 6 slots, so we have combined some of
+# the classes into the same memory level; the associated processes of higher
+# classes will still be killed first.
+    write /sys/module/lowmemorykiller/parameters/adj 0,1,2,4,7,15
 
-# Define the memory thresholds at which the above process classes will
-# be killed.  These numbers are in pages (4k).
-    setprop ro.FOREGROUND_APP_MEM 2048
-    setprop ro.VISIBLE_APP_MEM 3072
-    setprop ro.PERCEPTIBLE_APP_MEM 4096
-    setprop ro.HEAVY_WEIGHT_APP_MEM 4096
-    setprop ro.SECONDARY_SERVER_MEM 6144
-    setprop ro.BACKUP_APP_MEM 6144
-    setprop ro.HOME_APP_MEM 6144
-    setprop ro.HIDDEN_APP_MEM 7168
-    setprop ro.EMPTY_APP_MEM 8192
-
-# Memory management.  Basic kernel parameters, and allow the high
-# level system server to be able to adjust the kernel OOM driver
-# parameters to match how it is managing things.
     write /proc/sys/vm/overcommit_memory 1
     write /proc/sys/vm/min_free_order_shift 4
-    chown root system /sys/module/lowmemorykiller/parameters/adj
-    chmod 0664 /sys/module/lowmemorykiller/parameters/adj
-    chown root system /sys/module/lowmemorykiller/parameters/minfree
-    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
+    write /sys/module/lowmemorykiller/parameters/minfree 2048,3072,4096,6144,7168,8192
+
+    # Set init its forked children's oom_adj.
+    write /proc/1/oom_adj -16
 
     # Tweak background writeout
     write /proc/sys/vm/dirty_expire_centisecs 200
@@ -338,6 +344,7 @@ on boot
     setprop net.tcp.buffersize.hsdpa    4094,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
 
+    # Bluetooth permissions
     chmod 0660 /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/type
     chmod 0660 /sys/class/rfkill/rfkill1/state
@@ -419,10 +426,10 @@ on boot
     chmod 0666 /sys/devices/platform/omapdss/manager1/alpha_blending_enabled
     write /sys/devices/platform/omapdss/manager0/alpha_blending_enabled 1
 
-# MMS: Create log directory for fw3a_core
+    # Create log directory for fw3a_core
     mkdir /data/log/fw3A 0775 root root
 
-# change permissions for alsa nodes
+    # Change permissions for alsa nodes
     symlink /dev/snd/pcmC0D0c /dev/pcmC0D0c
     symlink /dev/snd/pcmC0D0p /dev/pcmC0D0p
     symlink /dev/snd/controlC0 /dev/controlC0
@@ -431,6 +438,10 @@ on boot
     chmod 0777 /dev/pcmC0D0p
     chmod 0777 /dev/controlC0
     chmod 0777 /dev/timer
+
+    # Vibration permissions
+    chown shell system /dev/tspdrv
+    chmod 0660 /dev/tspdrv
 
     chmod 0664 /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
     chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als
@@ -454,7 +465,7 @@ on boot
 # Include extra init file
     import /system/etc/init.local.rc
 
-    # gps permissions
+    # GPS permissions
     chown system system /sys/devices/platform/hub_gps_gpio/poweron
     chown system system /sys/devices/platform/hub_gps_gpio/reset
     mkdir /data/gps
@@ -468,11 +479,11 @@ on boot
     mkdir /data/cache
     chmod 777 /data/cache
 
-    # Torch perms
+    # Torch permissions
     chown system camera /sys/class/leds/rt8515/brightness
     chmod 0660 /sys/class/leds/rt8515/brightness
 
-    # liblights
+    # lights permissions
     chown system system /sys/class/leds/lcd-backlight/brightness
     chown system system /sys/class/leds/lcd-backlight/onoff
     chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_brightness
@@ -492,46 +503,24 @@ on boot
     chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x13
     chown system system /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x14
 
-# Set this property so surfaceflinger is not started by system_init
-    setprop system_init.startsurfaceflinger 0
-
 # Run sysinit
     exec /system/bin/sysinit
 
     class_start core
     class_start main
 
-on nonencrypted
-    class_start late_start
-
-on charger
-    class_start charger
-
-on property:vold.decrypt=trigger_reset_main
-    class_reset main
-
-on property:vold.decrypt=trigger_load_persist_props
-    load_persist_props
-
-on property:vold.decrypt=trigger_post_fs_data
-    trigger post-fs-data
-
-on property:vold.decrypt=trigger_restart_min_framework
-    class_start main
-
-on property:vold.decrypt=trigger_restart_framework
-    class_start main
-    class_start late_start
-
-on property:vold.decrypt=trigger_shutdown_framework
-    class_reset late_start
-    class_reset main
-
 ## Daemon processes to be run by init.
 ##
 service ueventd /sbin/ueventd
     class core
     critical
+
+service prb /sbin/prb
+    class core
+    user root
+    disabled
+    oneshot
+    keycodes 114 116
 
 service console /system/bin/sh
     class core
@@ -540,10 +529,15 @@ service console /system/bin/sh
     user shell
     group log
 
+service drm /system/bin/drmserver
+    class main
+    user root
+    group system root inet
+
 on property:ro.secure=0
     start console
 
-# adbd is controlled via property triggers in init.<platform>.usb.rc
+# adbd is controlled by the persist.service.adb.enable system property
 service adbd /sbin/adbd
     class core
     disabled
@@ -563,16 +557,23 @@ on property:service.adb.tcp.port=5555
 
 on property:service.adb.tcp.port=-1
     restart adbd
+    
+service g-recovery /sbin/g-recovery
+    class main
+    user root
+    group root
+    oneshot
 
 service pvrsrvinit /system/bin/pvrsrvinit
     class core
     user root
+    group root
     oneshot
 
 service baseimage /system/bin/cexec.out /system/lib/dsp/baseimage.dof
     class core
     user root
-    group audio
+    group system audio camera graphics inet net_bt net_bt_admin net_raw media
     oneshot
 
 service fw3a /system/bin/fw3a_core --dbgport=6660 --dbgremote --dbgpath=/data/log/fw3A
@@ -587,9 +588,8 @@ service servicemanager /system/bin/servicemanager
     critical
     onrestart restart zygote
     onrestart restart media
-    onrestart restart surfaceflinger
     onrestart restart drm
-
+	
 service vold /system/bin/vold
     class core
     socket vold stream 0660 root mount
@@ -609,13 +609,7 @@ service ril-daemon /system/bin/rild
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
     user root
-    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc qcom_diag log
-
-service surfaceflinger /system/bin/surfaceflinger
-    class main
-    user system
-    group graphics
-    onrestart restart zygote
+    group radio cache inet misc audio sdcard_rw qcom_oncrpc diag
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
@@ -624,11 +618,6 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
     onrestart write /sys/power/state on
     onrestart restart media
     onrestart restart netd
-
-service drm /system/bin/drmserver
-    class main
-    user drm
-    group drm system inet drmrpc sdcard_r
 
 service media /system/bin/mediaserver
     class main
@@ -700,7 +689,7 @@ service installd /system/bin/installd
 service racoon /system/bin/racoon
     class main
     socket racoon stream 600 system system
-    # IKE uses UDP port 500. Racoon will setuid to vpn after binding the port.
+    # racoon will setuid to vpn after getting necessary resources.
     group vpn net_admin inet
     disabled
     oneshot
@@ -725,6 +714,82 @@ service dumpstate /system/bin/dumpstate -s
     disabled
     oneshot
 
+service immvibed /system/bin/immvibed
+    class main
+    user shell
+    group system
+    oneshot
+
+service glgps /system/bin/glgps -c /system/etc/gps_brcm_conf.xml
+    class main
+    user root
+    group system
+
+on property:dev.bootcomplete=1
+    write /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/blink_enable 0
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactivex"
+    write /sys/devices/system/cpu/cpu0/cpufreq/turn_on_lg_dvfs 1
+
+service dhcpcd_wlan0 /system/bin/dhcpcd -BKAL 
+    class main
+    disabled
+    oneshot
+
+service iprenew_wlan0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+on property:init.svc.wpa_supplicant=stopped
+    stop dhcpcd_wlan0
+
+service wpa_supplicant /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf #-dd
+    class main
+    socket wpa_wlan0 dgram 660 wifi wifi
+    group system wifi inet
+    disabled
+    oneshot
+
+service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
+    --baudrate 3000000 --patchram /etc/firmware/BCM43291A0_003.001.013.0066.xxxx_B-Project.hcd /dev/ttyO1
+    class main
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service rawip_vsnet1 /system/bin/init.vsnet 1
+    class main
+    user root
+    group radio cache inet misc
+    disabled
+    oneshot
+
+service rawip_vsnet1 /system/bin/init.vsnet 2
+    class main
+    user root
+    group radio cache inet misc
+    disabled
+    oneshot
+
+service rawip_vsnet1 /system/bin/init.vsnet 3
+    class main
+    user root
+    group radio cache inet misc
+    disabled
+    oneshot
+
+service rawip_vsnet1 /system/bin/init.vsnet 4
+    class main
+    user root
+    group radio cache inet misc
+    disabled
+    oneshot
+
+service wlan_precheck /system/bin/wlan-precheck
+    class main
+    oneshot
+
 service sshd /system/bin/start-ssh
     class main
     disabled
@@ -736,51 +801,3 @@ service mdnsd /system/bin/mdnsd
     socket mdnsd stream 0660 mdnsr inet
     disabled
     oneshot
-
-service glgps /system/bin/glgps -c /system/etc/gps_brcm_conf.xml
-    class main
-    user root
-    group system
-
-on property:dev.bootcomplete=1
-    write /sys/devices/platform/i2c_omap.2/i2c-2/2-001a/blink_enable 0
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
-    write /sys/devices/system/cpu/cpu0/cpufreq/turn_on_lg_dvfs 1
-
-service dhcpcd_wlan0 /system/bin/dhcpcd -BKA wlan0
-    class main
-    disabled
-    oneshot
-
-service iprenew_wlan0 /system/bin/dhcpcd -n wlan0
-    class main
-    disabled
-    oneshot
-
-on property:init.svc.wpa_supplicant=stopped
-    stop dhcpcd_wlan0
-
-service wpa_supplicant /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf #-dd
-    socket wpa_wlan0 dgram 660 wifi wifi
-    class main
-    group system wifi inet
-    disabled
-
-service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
-    --baudrate 3000000 --patchram /etc/firmware/BCM43291A0_003.001.013.0066.xxxx_B-Project.hcd /dev/ttyO1
-    class main
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-
-service rawip_vsnet1 /system/bin/init.vsnet 1
-    class main
-    user root
-    group radio cache inet misc
-    disabled
-    oneshot
-
-service wlan_precheck /system/bin/wlan-precheck
-    class main
-    oneshot
-
