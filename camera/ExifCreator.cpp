@@ -1,102 +1,50 @@
 #define LOG_TAG "ExifCreator"
 
 #include <utils/Log.h>
-
-
-
 #include "ExifCreator.h"
-
-
 
 namespace android {
 
-
-
-
-
 ExifCreator::ExifCreator()
-
 {
-
 }
-
-
 
 ExifCreator::~ExifCreator()
-
 {
-
 }
-
-
-
-
 
 void* ExifCreator::ExifMemcpy(void *dest, void *src, unsigned int count)
-
 {
-
 	return memcpy(dest, src, count);
-
 }
 
-
-
 unsigned int ExifCreator::ExifCreate(unsigned char* pInput, ExifInfoStructure *pSetExifInfo)
-
 {	
 
 	unsigned int offset = 0;
-
 	unsigned int appLength = 0;
 
-
-
 	unsigned char app1Header[10] =
-
 	{
-
 		0xff,0xe1,0x00,0x08,0x45,
-
 		0x78,0x69,0x66,0x00,0x00
-
 	};
 
-
-
-
-
 	ExifMemcpy (pInput, app1Header, 10);
-
 	offset += 10;
 
-
-
 	offset += __ExifCreate(pInput + offset, pSetExifInfo);
-
 	if(offset == 10 ) {
-
 		return  0;
-
 	}
-
-
-
-	//upate length
 
 	appLength = offset-2;
 
 	pInput[2] = appLength>>8;
-
 	pInput[3] = appLength & 0xff;	
 
-
-
 	return offset;
-
 }
-
-
 
 unsigned int ExifCreator::ExifCreate_wo_GPS(unsigned char* pInput, ExifInfoStructure *pSetExifInfo,int flag)
 
@@ -164,12 +112,6 @@ unsigned int ExifCreator::ExifCreate_wo_GPS(unsigned char* pInput, ExifInfoStruc
 
 }
 
-
-
-
-
-
-
 unsigned int ExifCreator::__ExifCreate_wo_GPS(unsigned char* pInput, ExifInfoStructure *pSetExifInfo,int flag)
 
 {
@@ -177,63 +119,31 @@ unsigned int ExifCreator::__ExifCreate_wo_GPS(unsigned char* pInput, ExifInfoStr
 	unsigned char* pCurBuff = pInput;
 
 	unsigned int offset = 0;
-
 	unsigned int count = 0;
-
 	unsigned int m_0th_num = NUM_0TH_IFD;
-
 	unsigned int m_1th_num = NUM_1TH_IFD;
 
-
-
 	if(pSetExifInfo->hasGps)
-
 	{
-
 		m_0th_num += 1; //add GPS
-
 	}
 
-	
-
 	//Byte Order
-
 	*pCurBuff++ = 0x49;
-
 	*pCurBuff++ = 0x49;
-
-
 
 	//42
-
 	__ExifWriteSHORT_LE(pCurBuff, (unsigned short)42);
-
 	pCurBuff +=2;
-
-
-
 	offset +=8;
 
-
-
 	//0th IFD Offset
-
 	__ExifWriteLONG_LE(pCurBuff, offset);
-
 	pCurBuff = pInput + offset;
 
-
-
-	//0th IFD
-
 	//num of Interoperablility
-
 	__ExifWriteSHORT_LE(pCurBuff, (unsigned short) m_0th_num);
-
 	pCurBuff += NUMBER_SIZE;
-
-
-
 	offset += (NUMBER_SIZE + ( m_0th_num * TAG_SIZE ) + OFFSET_SIZE ); 
 
 
@@ -1528,326 +1438,140 @@ void ExifCreator::__ExifWriteBYTESTag(unsigned short tagID, unsigned char *pValu
 
 }
 
-
-
-
-
 void ExifCreator::__ExifWriteASCIITag(unsigned short tagID, unsigned char* pString, unsigned int count, unsigned char* pInput, unsigned char* pCurBuff, unsigned int *pOffset)
-
 {
-
-	__ExifWriteSHORT_LE(pCurBuff, tagID);//tag
-
+	__ExifWriteSHORT_LE(pCurBuff, tagID);
 	pCurBuff +=2;
-
-	__ExifWriteSHORT_LE(pCurBuff, (unsigned short)TYPE_ASCII);//type
-
+	__ExifWriteSHORT_LE(pCurBuff, (unsigned short)TYPE_ASCII);
 	pCurBuff +=2;
-
-
 
 	if(pString != 0) 
-
 	{
-
 		if(count <= 4) {
-
-			__ExifWriteLONG_LE(pCurBuff, count);//count
-
-			pCurBuff +=4;
-
-			
-
-			__ExifWriteASCII(pCurBuff, pString, count); //valueOffset(value)
-
-			pCurBuff +=4;
-
-			
-
-		}
-
-		else {					
-
-			__ExifWriteLONG_LE(pCurBuff, count);//count
-
-			pCurBuff +=4;
-
-			__ExifWriteLONG_LE(pCurBuff, *pOffset);//ValueOffset
-
-			pCurBuff +=4;
-
-			
-
-			__ExifWriteASCII(pInput + (*pOffset), pString, count); //value
-
-
-
-			*pOffset +=count;
-
-		}
-
+		__ExifWriteLONG_LE(pCurBuff, count);
+		pCurBuff +=4;
+		__ExifWriteASCII(pCurBuff, pString, count);
+		pCurBuff +=4;
 	}
-
-	else 
-
+	else
 	{
-
-		count = 0;
-
-		__ExifWriteLONG_LE(pCurBuff, count);//count
-
+		__ExifWriteLONG_LE(pCurBuff, count);
 		pCurBuff +=4;
-
-		__ExifWriteLONG_LE(pCurBuff, 0);//ValueOffset
-
+		__ExifWriteLONG_LE(pCurBuff, *pOffset);
 		pCurBuff +=4;
-
+		__ExifWriteASCII(pInput + (*pOffset), pString, count);
+		*pOffset +=count;
+		}
 	}
-
+	else
+	{
+		count = 0;
+		__ExifWriteLONG_LE(pCurBuff, count);
+		pCurBuff +=4;
+		__ExifWriteLONG_LE(pCurBuff, 0);
+		pCurBuff +=4;
+	}
 }
-
-
-
-
 
 void ExifCreator::__ExifWriteUNDEFINEDTag(unsigned short tagID, unsigned char* pValue, unsigned int count, unsigned char* pInput, unsigned char* pCurBuff, unsigned int *pOffset)
-
 {
-
-	__ExifWriteSHORT_LE(pCurBuff, tagID);//tag
-
+	__ExifWriteSHORT_LE(pCurBuff, tagID);
 	pCurBuff +=2;
-
-	__ExifWriteSHORT_LE(pCurBuff, (unsigned short)TYPE_UNDEFINED);//type
-
+	__ExifWriteSHORT_LE(pCurBuff, (unsigned short)TYPE_UNDEFINED);
 	pCurBuff +=2;
-
-
 
 	if(pValue != 0) 
-
 	{
-
 		if(count <= 4) {
+		__ExifWriteLONG_LE(pCurBuff, count);
 
-			__ExifWriteLONG_LE(pCurBuff, count);//count
-
-			pCurBuff +=4;
-
-		
-
-			__ExifWriteUNDEFINED(pCurBuff, pValue, count); //value offset
-
-			pCurBuff +=4;
-
-			
-
-		}
-
-		else {			
-
-			__ExifWriteLONG_LE(pCurBuff, count);//count
-
-			pCurBuff +=4;
-
-			__ExifWriteLONG_LE(pCurBuff, *pOffset);//ValueOffset
-
-			pCurBuff +=4;
-
-			
-
-			__ExifWriteUNDEFINED(pInput + (*pOffset), pValue, count); //value			
-
-			*pOffset +=count;
-
-		}
-
+		pCurBuff +=4;
+		__ExifWriteUNDEFINED(pCurBuff, pValue, count);
+		pCurBuff +=4;
 	}
-
+	else
+	{			
+		__ExifWriteLONG_LE(pCurBuff, count);
+		pCurBuff +=4;
+		__ExifWriteLONG_LE(pCurBuff, *pOffset);
+		pCurBuff +=4;
+		__ExifWriteUNDEFINED(pInput + (*pOffset), pValue, count);			
+		*pOffset +=count;
+		}
+	}
 	else 
-
 	{
-
 		count = 0;
-
-
-
-		__ExifWriteLONG_LE(pCurBuff, count);//count
-
+		__ExifWriteLONG_LE(pCurBuff, count);
 		pCurBuff +=4;
-
-		__ExifWriteLONG_LE(pCurBuff, 0);//ValueOffset
-
+		__ExifWriteLONG_LE(pCurBuff, 0);
 		pCurBuff +=4;
-
 	}
-
 }
-
-
-
-
-
-
 
 void ExifCreator::__ExifWriteRATIONAL(unsigned char* pBuff, unsigned int numerator, unsigned int denominator)
-
 {
-
 	__ExifWriteLONG_LE(pBuff, numerator);
-
 	__ExifWriteLONG_LE(pBuff+4, denominator);
-
 }
-
-
-
-
 
 void ExifCreator::__ExifWriteSRATIONAL(unsigned char* pBuff, int numerator, int denominator)
-
 {
-
 	__ExifWriteSLONG_LE(pBuff, numerator);
-
 	__ExifWriteSLONG_LE(pBuff+4, denominator);
-
 }
-
-
-
-
 
 void ExifCreator::__ExifWriteLONG_LE(unsigned char* pBuff, unsigned int value)
-
 {
-
 	*pBuff = (value & 0xff);
-
 	value = value>>8;
-
 	*(pBuff + 1) = (value & 0xff);
-
 	value = value>>8;
-
 	*(pBuff + 2) = (value & 0xff);
-
 	value = value>>8;
-
 	*(pBuff + 3) = (value & 0xff);
-
 }
-
-
-
-
 
 void ExifCreator::__ExifWriteSLONG_LE(unsigned char* pBuff, int value)
-
 {
-
 	*pBuff = (value & 0xff);
-
 	value = value>>8;
-
 	*(pBuff + 1) = (value & 0xff);
-
 	value = value>>8;
-
 	*(pBuff + 2) = (value & 0xff);
-
 	value = value>>8;
-
 	*(pBuff + 3) = (value & 0xff);
-
 }
-
-
-
-
 
 void ExifCreator::__ExifWriteSHORT_LE(unsigned char* pBuff, unsigned short value)
-
 {
-
 	*pBuff = (value & 0xff);
-
 	value = value>>8;
-
 	*(pBuff + 1) = (value & 0xff);
-
 }
-
-
-
-
 
 void ExifCreator::__ExifWriteASCII(unsigned char* pBuff, unsigned char* pString, unsigned int count)
-
 {
-
 	ExifMemcpy(pBuff, pString, count);
-
 }
-
-
-
-
-
-
 
 void ExifCreator::__ExifWriteUNDEFINED(unsigned char* pBuff, unsigned char* pValue, unsigned int count)
 
 {
-
 	ExifMemcpy(pBuff, pValue, count);
-
 }
-
-
-
-
-
-
-
-
 
 unsigned int ExifCreator::__ExifGetASCIILength(unsigned char* pString)
-
 {
-
 	unsigned int count = 0;
-
 	if(pString) {
-
 		while(pString[count] != 0) {
-
 			count++;
-
 		}
-
 	}
-
 	else {
-
 		count = 0;
-
 	}
-
-
-
 	return count + 1;
-
 }
-
-
-
-
-
 }; // namespace android
-
-
-
-
-
-

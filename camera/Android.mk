@@ -3,18 +3,18 @@ include $(all-subdir-makefiles)
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES:= \
-	CameraHal.cpp \
-        V4L2Camera.cpp \
-        CameraHardware.cpp \
-        converter.cpp \
-	ExifCreator.cpp \
+    CameraHal.cpp \
+    V4L2Camera.cpp \
+    CameraHardware.cpp \
+    converter.cpp \
+    ExifCreator.cpp \
 
 LOCAL_C_INCLUDES += \
     $(LOCAL_PATH)/../include/ \
-    frameworks/base/include/ui \
-    frameworks/base/include/utils \
-    frameworks/base/include/media/stagefright \
-    frameworks/base/include/media/stagefright/openmax \
+    frameworks/native/include/ui \
+    frameworks/native/include/utils \
+    frameworks/av/include/media/stagefright \
+    frameworks/native/include/media/openmax \
     external/jpeg \
     external/jhead
 

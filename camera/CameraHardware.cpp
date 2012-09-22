@@ -66,15 +66,10 @@ static int mCameraID=0;
 int version=0;
 namespace android {
 
-const char CameraHardware::supportedPictureSizes_ffc [] = "640x480,320x240,176x144";
+const char CameraHardware::supportedPictureSizes_ffc [] = "1600x1200,1280x960,800x600,640x480,640x480,320x240,176x144";
 const char CameraHardware::supportedPictureSizes_bfc [] = "2592x1944,2048x1536,1600x1200,1280x960,800x600,640x480";
 const char CameraHardware::supportedPreviewSizes_ffc [] = "720x480,640x480,352x288,320x240,176x144";
 const char CameraHardware::supportedPreviewSizes_bfc [] = "1280x720,720x480,640x480,352x288,320x240";
-
-//const char CameraHardware::supportedPictureSizes_ffc [] = "1600x1200,1280x960,800x600,640x480,640x480,320x240,176x144";
-//const char CameraHardware::supportedPictureSizes_bfc [] = "2592x1944,2048x1536,1600x1200,1280x960,800x600,640x480";
-//const char CameraHardware::supportedPreviewSizes_ffc [] = "720x480,640x480,352x288,320x240,176x144";
-//const char CameraHardware::supportedPreviewSizes_bfc [] = "1280x720,720x480,640x480,352x288,320x240";
 
 CameraHardware::CameraHardware(int CameraID)
                   : mParameters(),
@@ -511,7 +506,7 @@ int CameraHardware::previewThread()
 			// Get preview frame
 			tempbuf=mCamera->GrabPreviewFrame();
 		}
-                yuyv422_to_yuv420((unsigned char *)tempbuf,(unsigned char *)dst, width, height);
+                yuyv422_to_rgb565((unsigned char *)tempbuf,(unsigned char *)dst, width, height);
 		if(mCameraID==CAMERA_FF) {
                 yuv422_to_YV12((unsigned char *)tempbuf,(unsigned char *)dst, width, height);
 		}
@@ -562,8 +557,6 @@ status_t CameraHardware::startPreview()
 	    	ALOGE("Fail to configure camera device");
 	    	return INVALID_OPERATION;
     }
-   if(mCameraID==CAMERA_FF)
-   	mCamera->SetCameraFlip(true);
    /* clear previously buffers*/
     if(mPreviewHeap != NULL) {
         ALOGD("mPreviewHeap Cleaning!!!!");
