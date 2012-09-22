@@ -2,31 +2,20 @@
 # system.prop for p970
 #
 
-# ALSA audio config
-alsa.mixer.playback.master=DAC2 Analog
+# Sound config
 alsa.mixer.capture.master=Analog
+alsa.mixer.playback.master=DAC2 Analog
 
-# Radio Interface
+# RIL
 rild.libpath=/system/lib/lge-ril.so
 rild.libargs=-d /dev/ttyspi0
-mobiledata.interfaces=vsnet0,vsnet1,vsnet2,vsnet3
 ro.telephony.call_ring.multiple=false
 ro.telephony.call_ring.delay=1000
 ro.telephony.call_ring.absent=true
-ro.ril.disable.power.collapse=0
 ro.telephony.ril.v3=facilitylock,datacall,signalstrength,icccardstatus,singlepdp
+ro.telephony.ril_class=LGEStarRIL
+mobiledata.interfaces=vsnet0,vsnet1,vsnet2,vsnet3
 
-# BT Config
+# BT
 ro.bt.bdaddr_path=/sys/devices/platform/bd_address/bdaddr_if
 
-# Media
-media.stagefright.enable-player=true
-media.stagefright.enable-meta=true
-media.stagefright.enable-scan=true
-media.stagefright.enable-http=true
-media.stagefright.enable-rtsp=true
-
-# Tweaks
-debug.sf.hw=1
-debug.performance.tuning=1
-video.accelerate.hw=1
