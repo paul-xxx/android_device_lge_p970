@@ -1,4 +1,4 @@
-# Copyright (C) 2012 The Android Open Source Project
+# Copyright (C) 2012 The Black Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,77 +12,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Include vendor non-open source blobs
-$(call inherit-product-if-exists, vendor/lge/p970/p970-vendor-blobs.mk)
-
-# Screen density is actually considered a locale (since it is taken into account
-# the the build-time selection of resources). The product definitions including
-# this file must pay attention to the fact that the first entry in the final
-# PRODUCT_LOCALES expansion must not be a density.
-PRODUCT_LOCALES := hdpi
-
-DEVICE_PACKAGE_OVERLAYS := device/lge/p970/overlay
-
-# Dalvik VM
-$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
-
 # The gps config appropriate for this device
 $(call inherit-product, device/common/gps/gps_us_supl.mk)
 
-# Prebuilt copy
+# Dalvik fix
+PRODUCT_TAGS += dalvik.gc.type-precise
+$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
+
+# HDPI
+PRODUCT_LOCALES += hdpi
+
+# Framework overlay
+DEVICE_PACKAGE_OVERLAYS += device/lge/p970/overlay
+
+# Kernel
+ifeq ($(TARGET_PREBUILT_KERNEL),)
+LOCAL_KERNEL := device/lge/p970/prebuilt/kernel
+else
+LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
+endif
+
 PRODUCT_COPY_FILES += \
-    device/lge/p970/prebuilt/media_codecs.xml:system/etc/media_codecs.xml \
-    device/lge/p970/prebuilt/media_profiles.xml:system/etc/media_profiles.xml \
-    device/lge/p970/prebuilt/vold.fstab:system/etc/vold.fstab
+    $(LOCAL_KERNEL):kernel
 
-# Filesystem management tools
-PRODUCT_PACKAGES += \
-    make_ext4fs \
-    setup_fs
+# Ramdisk
+PRODUCT_COPY_FILES += \
+$(shell test -d $(LOCAL_PATH)/prebuilt/chargerimages && find $(LOCAL_PATH)/prebuilt/chargerimages -name '*.rle' -printf '%p:root/chargerimages/%f ') \
+    $(LOCAL_PATH)/prebuilt/blink.sh:root/blink.sh \
+    $(LOCAL_PATH)/prebuilt/bootimage.rle:root/bootimages/ON_480x800_08fps_0000.rle \
+    $(LOCAL_PATH)/prebuilt/chargerlogo:root/sbin/chargerlogo \
+    $(LOCAL_PATH)/prebuilt/g-recovery:root/sbin/g-recovery \
+    $(LOCAL_PATH)/prebuilt/init:root/init \
+    $(LOCAL_PATH)/prebuilt/init.lge.rc:root/init.lge.rc \
+    $(LOCAL_PATH)/prebuilt/init.lge.usb.rc:root/init.lge.usb.rc \
+    $(LOCAL_PATH)/prebuilt/init.rc:root/init.rc \
+    $(LOCAL_PATH)/prebuilt/ueventd.lge.rc:root/ueventd.lge.rc \
+    $(LOCAL_PATH)/configs/vold.fstab:system/etc/vold.fstab
 
-# HW Packages
-PRODUCT_PACKAGES += \
-    audio.a2dp.default \
-    audio.usb.default \
-    audio_policy.p970 \
-    hwcomposer.default \
-    camera.p970 \
-    lights.p970
-
-# JB sound
-PRODUCT_PACKAGES += \
-    hcitool hciattach hcidump \
-    libaudioutils \
-    libaudiohw_legacy
-
-# Misc other modules
-PRODUCT_PACKAGES += \
-    libRS \
-    librs_jni
-
-# Other packages
-PRODUCT_PACKAGES += \
-    prb \
-    com.android.future.usb.accessory
-
-# OMX
-PRODUCT_PACKAGES += \
-    dspexec \
-    libbridge \
-    libOMX.TI.AAC.decode libOMX.TI.AAC.encode libOMX.TI.G711.decode \
-    libOMX.TI.G711.encode libOMX.TI.G722.decode libOMX.TI.G722.encode \
-    libOMX.TI.G726.decode libOMX.TI.G726.encode libOMX.TI.G729.decode \
-    libOMX.TI.G729.encode libOMX.TI.ILBC.decode libOMX.TI.ILBC.encode \
-    libOMX.TI.MP3.decode libOMX.TI.AMR.decode libOMX.TI.AMR.encode \
-    libOMX.TI.WBAMR.decode libOMX.TI.WBAMR.encode libOMX.TI.WMA.decode \
-    libOMX.TI.JPEG.decoder libOMX.TI.JPEG.Encoder libOMX.TI.VPP \
-    libOMX.TI.Video.Decoder libOMX.TI.Video.encoder libLCML \
-    libOMX_Core \
-    libstagefrighthw
+# Recovery
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
+    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
@@ -94,11 +68,76 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.xml \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
-    frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
-    frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
+
+# RIL and GPS
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/gps_brcm_conf.xml:system/etc/gps_brcm_conf.xml \
+    $(LOCAL_PATH)/configs/ipc_channels.config:system/etc/ipc_channels.config \
+    $(LOCAL_PATH)/configs/init.vsnet:system/bin/init.vsnet
+
+# Wifi
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/wifimac/wlan-precheck:system/bin/wlan-precheck \
+    $(LOCAL_PATH)/prebuilt/wireless.ko:system/lib/modules/wireless.ko \
+    $(LOCAL_PATH)/prebuilt/scsi_wait_scan.ko:system/lib/modules/scsi_wait_scan.ko \
+    $(LOCAL_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
+    $(LOCAL_PATH)/configs/nvram.txt:system/etc/wifi/nvram.txt \
+    $(LOCAL_PATH)/configs/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf
+
+# HW Hal
+PRODUCT_PACKAGES += \
+    audio.a2dp.default \
+    audio.usb.default \
+    audio_policy.p970 \
+    camera.p970 \
+    lights.p970 \
+    hwcomposer.default
+
+# Other
+PRODUCT_PACKAGES += \
+    com.android.future.usb.accessory \
+    libaudioutils \
+    hciattach \
+    librs_jni \
+    hcidump \
+    hcitool \
+    wifimac \
+    libRS \
+    prb
+
+# OMX
+PRODUCT_PACKAGES += \
+    dspexec \
+    libbridge \
+    libLCML \
+    libOMX_Core \
+    libstagefrighthw \
+    libskiahw \
+    libOMX.TI.AAC.decode \
+    libOMX.TI.AAC.encode \
+    libOMX.TI.AMR.decode \
+    libOMX.TI.AMR.encode \
+    libOMX.TI.ILBC.decode \
+    libOMX.TI.ILBC.encode \
+    libOMX.TI.MP3.decode \
+    libOMX.TI.MP3.encode \
+    libOMX.TI.WBAMR.decode \
+    libOMX.TI.WBAMR.encode \
+    libOMX.TI.WMA.decode \
+    libOMX.TI.WMA.encode \
+    libOMX.TI.JPEG.decoder \
+    libOMX.TI.JPEG.Encoder \
+    libOMX.TI.VPP \
+    libOMX.TI.Video.Decoder \
+    libOMX.TI.Video.encoder
+
+# Media configuration
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
+    $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf
 
 # These are the hardware-specific settings that are stored in system properties.
 # Note that the only such settings should be the ones that are too low-level to
@@ -111,6 +150,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     com.ti.omap_enhancement=true \
     ro.media.enc.jpeg.quality=100 \
     ro.kernel.android.checkjni=0 \
+    ro.hardware.respect_als=true \
+    dalvik.vm.dexopt-data-only=1 \
     sys.usb.state=mass_storage,adb \
     persist.sys.usb.config=mass_storage,adb
 
@@ -122,48 +163,8 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
     persist.service.adb.enable=1 \
     persist.sys.usb.config=mass_storage,adb
 
-PRODUCT_TAGS += dalvik.gc.type-precise
-
-# Initfs
-PRODUCT_COPY_FILES += \
-$(shell test -d device/lge/p970/prebuilt/initramfs/chargerimages && find device/lge/p970/prebuilt/initramfs/chargerimages -name '*.rle' -printf '%p:root/chargerimages/%f ') \
-    $(LOCAL_PATH)/prebuilt/initramfs/sbin/chargerlogo:root/sbin/chargerlogo \
-    $(LOCAL_PATH)/prebuilt/initramfs/sbin/g-recovery:root/sbin/g-recovery \
-    $(LOCAL_PATH)/prebuilt/initramfs/blink.sh:root/blink.sh \
-    $(LOCAL_PATH)/prebuilt/initramfs/bootimage.rle:root/bootimages/ON_480x800_08fps_0000.rle \
-    $(LOCAL_PATH)/prebuilt/initramfs/init:root/init \
-    $(LOCAL_PATH)/prebuilt/initramfs/init.lge.rc:root/init.lge.rc \
-    $(LOCAL_PATH)/prebuilt/initramfs/init.lge.usb.rc:root/init.lge.usb.rc \
-    $(LOCAL_PATH)/prebuilt/initramfs/init.rc:root/init.rc \
-    $(LOCAL_PATH)/prebuilt/initramfs/ueventd.lge.rc:root/ueventd.lge.rc
-
 # See comment at the top of this file. This is where the other
 # half of the device-specific product definition file takes care
 # of the aspects that require proprietary drivers that aren't
 # commonly available
 $(call inherit-product-if-exists, vendor/lge/p970/p970-vendor.mk)
-
-# Kernel
-ifeq ($(TARGET_PREBUILT_KERNEL),)
-    LOCAL_KERNEL := device/lge/p970/prebuilt/kernel
-else
-    LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-endif
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_KERNEL):kernel
-
-# Audio copy
-PRODUCT_COPY_FILES += \
-    device/lge/p970/audio/audio_policy.conf:system/etc/audio_policy.conf
-
-# Wlan copy
-PRODUCT_COPY_FILES += \
-    device/lge/p970/prebuilt/wlan/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
-    device/lge/p970/prebuilt/wlan/fw_bcm4329.bin:system/etc/wifi/fw_bcm4329.bin \
-    device/lge/p970/prebuilt/wlan/fw_bcm4329_ap.bin:system/etc/wifi/fw_bcm4329_ap.bin \
-    device/lge/p970/prebuilt/wlan/nvram.txt:system/etc/wifi/nvram.txt \
-    device/lge/p970/prebuilt/wlan/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-    device/lge/p970/prebuilt/wlan/scsi_wait_scan.ko:system/lib/modules/scsi_wait_scan.ko \
-    device/lge/p970/prebuilt/wlan/wireless.ko:system/lib/modules/wireless.ko \
-    device/lge/p970/prebuilt/wlan/wlan-precheck:system/bin/wlan-precheck
