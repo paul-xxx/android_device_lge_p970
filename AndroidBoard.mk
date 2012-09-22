@@ -12,4 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-PRODUCT_MAKEFILES := $(LOCAL_DIR)/full_p970.mk
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+ALL_PREBUILT += $(INSTALLED_KERNEL_TARGET)
+
+# include the non-open-source counterpart to this file
+-include vendor/lge/p970/AndroidBoardVendor.mk
