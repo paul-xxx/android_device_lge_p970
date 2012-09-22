@@ -1,7 +1,0 @@
-[
-    {
-        "repository": "android_vendor_lge_p970",
-        "target_path": "vendor/lge/p970",
-        "branch": "jellybean"
-    }
-]
