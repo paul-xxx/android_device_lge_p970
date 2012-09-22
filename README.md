@@ -2,11 +2,12 @@ Black Jelly Bean Project
 ========================
 LG Optimus Black device folder for build Android 4.1.x
 
-Download AOSP/AOKP/CM10 Sources
+Download AOSP/AOKP or CM10 Sources:
+-------------------------------
 - All info you can find in wiki or from other source
 
 Download device sources:
----------
+------------------------
 - cd your_android_source_codes_dir
 - git clone git://github.com/paul-xxx/android_device_lge_p970.git -b jellybean device/lge/p970
 - git clone git://github.com/paul-xxx/android_device_lge_p970.git -b jellybean vendor/lge/p970
