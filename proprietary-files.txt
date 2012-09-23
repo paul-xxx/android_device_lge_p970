@@ -1,4 +1,4 @@
-# Copyright (C) 2012 The Android Open Source Project
+# Copyright (C) 2012 The Black Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 
 app/RootExplorer.apk
 app/Torch.apk
+bin/cexec.out
 bin/glgps
+bin/immvibed
 bin/pvrsrvctl
 bin/pvrsrvinit
 bin/rild
@@ -75,6 +77,11 @@ lib/dsp/yuvconvert.l64p
 lib/egl/libEGL_POWERVR_SGX530_125.so
 lib/egl/libGLESv1_CM_POWERVR_SGX530_125.so
 lib/egl/libGLESv2_POWERVR_SGX530_125.so
+lib/hw/alsa.omap3.so
+lib/hw/audio.primary.omap3.so
+lib/hw/gps.omap3.so
+lib/hw/gralloc.omap3.so
+lib/hw/sensors.omap3.so
 lib/lge-ril.so
 lib/liba2dp.so
 lib/libaffw_2.0.so
@@ -84,6 +91,7 @@ lib/libaudio.so
 lib/libaudiomodemgeneric.so
 lib/libglslcompiler.so
 lib/libIMGegl.so
+lib/libImmVibeJ.so
 lib/libini.so
 lib/libmllite.so
 lib/libmlplatform.so
@@ -102,7 +110,6 @@ lib/libOMX.TI.G726.encode.so
 lib/libOMX.TI.G729.decode.so
 lib/libOMX.TI.G729.encode.so
 lib/libOMX.TI.h264.splt.Encoder.so
-lib/libOMX.TI.ILBC.decode.so
 lib/libOMX.TI.mp4.splt.Encoder.so
 lib/libpvr2d.so
 lib/libpvrANDROID_WSEGL.so
