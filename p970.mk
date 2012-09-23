@@ -87,6 +87,11 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/nvram.txt:system/etc/wifi/nvram.txt \
     $(LOCAL_PATH)/configs/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf
 
+# Media configuration
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
+    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml
+
 # HW Hal
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
@@ -115,7 +120,6 @@ PRODUCT_PACKAGES += \
     libLCML \
     libOMX_Core \
     libstagefrighthw \
-    libskiahw \
     libOMX.TI.AAC.decode \
     libOMX.TI.AAC.encode \
     libOMX.TI.AMR.decode \
@@ -133,11 +137,6 @@ PRODUCT_PACKAGES += \
     libOMX.TI.VPP \
     libOMX.TI.Video.Decoder \
     libOMX.TI.Video.encoder
-
-# Media configuration
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
-    $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf
 
 # These are the hardware-specific settings that are stored in system properties.
 # Note that the only such settings should be the ones that are too low-level to
