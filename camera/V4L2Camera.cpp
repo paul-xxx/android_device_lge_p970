@@ -822,7 +822,6 @@ camera_memory_t* V4L2Camera::GrabJpegFrame (camera_request_memory mRequestMemory
 		}
 		nDequeued++;
 
-		//Latona Front Camera doesn't support Image Processing. Manually Encode the JPEG
 		if(IsFrontCam)		
 		{	
 			ALOGD("YUVU Format - savePicture");

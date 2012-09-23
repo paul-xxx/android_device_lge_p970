@@ -177,8 +177,7 @@ void CameraHardware::initDefaultParameters(int CameraID)
               			CameraParameters::FOCUS_MODE_AUTO);
        		 	p.set(CameraParameters::KEY_FOCUS_DISTANCES,
               			BACK_CAMERA_AUTO_FOCUS_DISTANCES_STR);
-        		p.set(CameraParameters::KEY_SUPPORTED_JPEG_THUMBNAIL_SIZES,
-              			"320x240,0x0");
+        		p.set(CameraParameters::KEY_SUPPORTED_JPEG_THUMBNAIL_SIZES, "320x240,0x0");
         		p.set(CameraParameters::KEY_JPEG_THUMBNAIL_WIDTH, "320");
         		p.set(CameraParameters::KEY_JPEG_THUMBNAIL_HEIGHT, "240");
         		p.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES, "30");
@@ -818,7 +817,7 @@ int CameraHardware::pictureThread()
 
     if(mCameraID==CAMERA_FF)
     {
-	fps=15;
+	fps=30;
 	pixelformat=PIXEL_FORMAT;
     }
     ret = mCamera->Configure(width,height,pixelformat,fps,1);
@@ -826,8 +825,8 @@ int CameraHardware::pictureThread()
 	    	ALOGE("Fail to configure camera device");
 	    	return INVALID_OPERATION;
     }
-   if(mCameraID==CAMERA_FF)
-   	mCamera->SetCameraFlip(true);
+//   if(mCameraID==CAMERA_FF)
+//   	mCamera->SetCameraFlip(true);
 
      ret = mCamera->BufferMap(1);
      if (ret) {
@@ -1086,7 +1085,7 @@ status_t CameraHardware::setParameters(const CameraParameters& params)
             }
         }
 
-        // focus mode
+       // focus mode
         if (new_focus_mode_str != NULL) {
             int  new_focus_mode = -1;
 

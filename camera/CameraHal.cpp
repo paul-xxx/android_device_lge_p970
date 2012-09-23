@@ -61,7 +61,7 @@ static struct hw_module_methods_t camera_module_methods = {
 camera_module_t HAL_MODULE_INFO_SYM = {
     common: {
          tag: HARDWARE_MODULE_TAG,
-         version_major: 1,
+         version_major: 2,
          version_minor: 0,
          id: CAMERA_HARDWARE_MODULE_ID,
          name: "CameraHal Module - For Optimus Black",

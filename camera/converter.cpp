@@ -64,10 +64,10 @@ void yuyv422_to_rgb565(unsigned char *bufsrc, unsigned char *bufdest, int width,
 {
     unsigned char *ptrsrcy1, *ptrsrcy2;
     unsigned char *ptrsrcy3, *ptrsrcy4;
-    unsigned char *ptrsrccr1, *ptrsrccr2;
-    unsigned char *ptrsrccr3, *ptrsrccr4;
     unsigned char *ptrsrccb1, *ptrsrccb2;
     unsigned char *ptrsrccb3, *ptrsrccb4;
+    unsigned char *ptrsrccr1, *ptrsrccr2;
+    unsigned char *ptrsrccr3, *ptrsrccr4;
     int srcystride, srcccstride;
 
     ptrsrcy1  = bufsrc ;
@@ -75,23 +75,23 @@ void yuyv422_to_rgb565(unsigned char *bufsrc, unsigned char *bufdest, int width,
     ptrsrcy3  = bufsrc + (width<<1)*2 ;
     ptrsrcy4  = bufsrc + (width<<1)*3 ;
 
-    ptrsrccr1 = bufsrc + 1;
-    ptrsrccr2 = bufsrc + (width<<1) + 1;
-    ptrsrccr3 = bufsrc + (width<<1)*2 + 3;
-    ptrsrccr4 = bufsrc + (width<<1)*3 + 3;
-
     ptrsrccb1 = bufsrc + 1;
     ptrsrccb2 = bufsrc + (width<<1) + 1;
     ptrsrccb3 = bufsrc + (width<<1)*2 + 1;
     ptrsrccb4 = bufsrc + (width<<1)*3 + 1;
+
+    ptrsrccr1 = bufsrc + 3;
+    ptrsrccr2 = bufsrc + (width<<1) + 3;
+    ptrsrccr3 = bufsrc + (width<<1)*2 + 3;
+    ptrsrccr4 = bufsrc + (width<<1)*3 + 3;
 
     srcystride  = (width<<1)*3;
     srcccstride = (width<<1)*3;
 
     unsigned char *ptrdesty1, *ptrdesty2;
     unsigned char *ptrdesty3, *ptrdesty4;
-    unsigned char *ptrdestcr1, *ptrdestcr2;
     unsigned char *ptrdestcb1, *ptrdestcb2;
+    unsigned char *ptrdestcr1, *ptrdestcr2;
     int destystride, destccstride;
 
     ptrdesty1 = bufdest;
@@ -99,14 +99,14 @@ void yuyv422_to_rgb565(unsigned char *bufsrc, unsigned char *bufdest, int width,
     ptrdesty3 = bufdest + width*2;
     ptrdesty4 = bufdest + width*3;
 
-    ptrdestcr1 = bufdest + width*height + ((width*height) >> 2);
-    ptrdestcr2 = bufdest + width*height + ((width*height) >> 2) + (width>>1);
-
     ptrdestcb1 = bufdest + width*height;
-    ptrdestcb2 = bufdest + width*height + (width>>1);
+    ptrdestcb2 = bufdest + width*height + width;
+
+    ptrdestcr1 = bufdest + width*height + 1;
+    ptrdestcr2 = bufdest + width*height + width + 1;
 
     destystride  = (width)*3;
-    destccstride = (width>>1);
+    destccstride = width;
 
     int i, j;
 
@@ -134,17 +134,21 @@ void yuyv422_to_rgb565(unsigned char *bufsrc, unsigned char *bufdest, int width,
             ptrsrcy3 += 2;
             ptrsrcy4 += 2;
 
-            (*ptrdestcr1++) = (*ptrsrccr1);
-            (*ptrdestcr2++) = (*ptrsrccr3);
-
-            ptrsrccr1 += 4;
-            ptrsrccr3 += 4;
-
-            (*ptrdestcb1++) = (*ptrsrccb1);
-            (*ptrdestcb2++) = (*ptrsrccb3);
+            (*ptrdestcb1) = (*ptrsrccb1);
+            (*ptrdestcb2) = (*ptrsrccb3);
+            ptrdestcb1 += 2;
+            ptrdestcb2 += 2;
 
             ptrsrccb1 += 4;
             ptrsrccb3 += 4;
+
+            (*ptrdestcr1) = (*ptrsrccr1);
+            (*ptrdestcr2) = (*ptrsrccr3);
+            ptrdestcr1 += 2;
+            ptrdestcr2 += 2;
+
+            ptrsrccr1 += 4;
+            ptrsrccr3 += 4;
 
         }
 
