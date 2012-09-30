@@ -27,10 +27,13 @@ $(call inherit-product, device/lge/p970/p970.mk)
 # P970 uses high-density artwork where available
 PRODUCT_LOCALES += hdpi
 
+# Release name
+PRODUCT_RELEASE_NAME := P970
+
 # Discard inherited values and use our own instead.
 PRODUCT_NAME := full_p970
 PRODUCT_DEVICE := p970
-PRODUCT_BRAND := Android
+PRODUCT_BRAND := LGE
 PRODUCT_MODEL := LG-P970
 PRODUCT_MANUFACTURER := LGE
 
