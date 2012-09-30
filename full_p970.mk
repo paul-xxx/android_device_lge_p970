@@ -23,17 +23,18 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full.mk)
 $(call inherit-product, device/lge/p970/p970.mk)
+$(call inherit-product, device/common/gps/gps_us_supl.mk)
 
 # P970 uses high-density artwork where available
 PRODUCT_LOCALES += hdpi
-
-# Release name
-PRODUCT_RELEASE_NAME := P970
+PRODUCT_AAPT_CONFIG := normal hdpi
 
 # Discard inherited values and use our own instead.
+PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := full_p970
 PRODUCT_DEVICE := p970
 PRODUCT_BRAND := LGE
 PRODUCT_MODEL := LG-P970
+PRODUCT_RELEASE_NAME := P970
 PRODUCT_MANUFACTURER := LGE
 
