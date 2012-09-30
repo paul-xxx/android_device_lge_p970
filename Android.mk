@@ -12,6 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),p970)
+ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),hub)
 include $(call first-makefiles-under,$(call my-dir))
 endif
