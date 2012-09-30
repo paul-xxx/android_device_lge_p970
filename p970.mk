@@ -25,24 +25,9 @@ PRODUCT_LOCALES += hdpi
 # Framework overlay
 DEVICE_PACKAGE_OVERLAYS += device/lge/p970/overlay
 
-# Kernel
-ifeq ($(TARGET_PREBUILT_KERNEL),)
-LOCAL_KERNEL := device/lge/p970/prebuilt/kernel
-else
-LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-endif
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_KERNEL):kernel
-
 # Ramdisk
 PRODUCT_COPY_FILES += \
-$(shell test -d $(LOCAL_PATH)/prebuilt/chargerimages && find $(LOCAL_PATH)/prebuilt/chargerimages -name '*.rle' -printf '%p:root/chargerimages/%f ') \
-    $(LOCAL_PATH)/prebuilt/blink.sh:root/blink.sh \
-    $(LOCAL_PATH)/prebuilt/bootimage.rle:root/bootimages/ON_480x800_08fps_0000.rle \
-    $(LOCAL_PATH)/prebuilt/chargerlogo:root/sbin/chargerlogo \
     $(LOCAL_PATH)/prebuilt/g-recovery:root/sbin/g-recovery \
-    $(LOCAL_PATH)/prebuilt/init:root/init \
     $(LOCAL_PATH)/prebuilt/init.lge.rc:root/init.lge.rc \
     $(LOCAL_PATH)/prebuilt/init.lge.usb.rc:root/init.lge.usb.rc \
     $(LOCAL_PATH)/prebuilt/init.rc:root/init.rc \
@@ -81,8 +66,6 @@ PRODUCT_COPY_FILES += \
 # Wifi
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wifimac/wlan-precheck:system/bin/wlan-precheck \
-    $(LOCAL_PATH)/prebuilt/wireless.ko:system/lib/modules/wireless.ko \
-    $(LOCAL_PATH)/prebuilt/scsi_wait_scan.ko:system/lib/modules/scsi_wait_scan.ko \
     $(LOCAL_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
     $(LOCAL_PATH)/configs/nvram.txt:system/etc/wifi/nvram.txt \
     $(LOCAL_PATH)/configs/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf
@@ -96,10 +79,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
     audio.usb.default \
-    audio_policy.p970 \
-    camera.p970 \
-    lights.p970 \
-    hwcomposer.default
+    lights.hub \
 
 # Other
 PRODUCT_PACKAGES += \
@@ -110,7 +90,6 @@ PRODUCT_PACKAGES += \
     hcidump \
     hcitool \
     wifimac \
-    libRS \
     prb
 
 # OMX
@@ -134,7 +113,6 @@ PRODUCT_PACKAGES += \
     libOMX.TI.WMA.encode \
     libOMX.TI.JPEG.decoder \
     libOMX.TI.JPEG.Encoder \
-    libOMX.TI.VPP \
     libOMX.TI.Video.Decoder \
     libOMX.TI.Video.encoder
 

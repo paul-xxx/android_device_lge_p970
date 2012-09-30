@@ -13,7 +13,7 @@
 # limitations under the License.
 
 ## Include headers
-TARGET_SPECIFIC_HEADER_PATH := device/lge/p970/include
+#TARGET_SPECIFIC_HEADER_PATH := device/lge/p970/include
 
 ## inherit from the proprietary version
 -include vendor/lge/p970/BoardConfigVendor.mk
@@ -25,12 +25,10 @@ TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
 ARCH_ARM_HAVE_TLS_REGISTER := true
-TARGET_PROVIDES_INIT_RC := true
-TARGET_PROVIDES_INIT_TARGET_RC := true
 
 ## Device specific
 OMAP_ENHANCEMENT := true
-TARGET_BOOTLOADER_BOARD_NAME := p970
+TARGET_BOOTLOADER_BOARD_NAME := hub
 COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT -DTARGET_OMAP3
 BOARD_NEEDS_CUTILS_LOG := true
 BOARD_SYSFS_LIGHT_SENSOR := "/sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als"
@@ -41,7 +39,6 @@ TARGET_PROVIDES_INIT_TARGET_RC := true
 BOARD_KERNEL_CMDLINE := 
 BOARD_KERNEL_BASE := 0x80000000
 BOARD_PAGE_SIZE := 0x00000800
-TARGET_PREBUILT_KERNEL := device/lge/p970/prebuilt/kernel
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_CUSTOM_GRAPHICS := ../../../device/lge/p970/recovery/graphics.c
 
@@ -58,25 +55,17 @@ BOARD_MTP_DEVICE := "/dev/mtp"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun0/file"
 
 ## Audio
-BOARD_USES_AUDIO_LEGACY := true
 BOARD_USES_GENERIC_AUDIO := false
 TARGET_PROVIDES_LIBAUDIO := true
 
 ## OMX and Camera
 HARDWARE_OMX := true
 ifdef HARDWARE_OMX
-ITTIAM_AUDIO := 1
-ITTIAM_VIDEO := 1
-BUILD_JPEG_DECODER := 1
-BUILD_VPP := 1
-BUILD_WITH_TI_AUDIO := 1
-TARGET_OMX_WVGA_BUFFERS := true
-BOARD_OMAP3_WITH_FFC := true
 OMX_JPEG := true
 OMX_VENDOR := ti
 OMX_VENDOR_INCLUDES := \
-	hardware/ti/omap3/omx/system/src/openmax_il/omx_core/inc \
-	hardware/ti/omx/image/src/openmax_il/jpeg_enc/inc
+   hardware/ti/omx/system/src/openmax_il/omx_core/inc \
+   hardware/ti/omx/image/src/openmax_il/jpeg_enc/inc
 OMX_VENDOR_WRAPPER := TI_OMX_Wrapper
 BOARD_OPENCORE_LIBRARIES := libOMX_Core
 BOARD_OPENCORE_FLAGS := -DHARDWARE_OMX=1
