@@ -112,27 +112,12 @@ PRODUCT_PACKAGES += \
 
 # OMX
 PRODUCT_PACKAGES += \
-    cexec.out \
-    libbridge \
-    libLCML \
-    libOMX_Core \
-    libstagefrighthw \
-    libOMX.TI.AAC.decode \
     libOMX.TI.AAC.encode \
-    libOMX.TI.AMR.decode \
     libOMX.TI.AMR.encode \
-    libOMX.TI.ILBC.decode \
-    libOMX.TI.ILBC.encode \
-    libOMX.TI.MP3.decode \
-    libOMX.TI.MP3.encode \
-    libOMX.TI.WBAMR.decode \
-    libOMX.TI.WBAMR.encode \
-    libOMX.TI.WMA.decode \
-    libOMX.TI.WMA.encode \
-    libOMX.TI.JPEG.decoder \
-    libOMX.TI.JPEG.Encoder \
     libOMX.TI.Video.Decoder \
-    libOMX.TI.Video.encoder
+    libOMX.TI.Video.encoder \
+    libOMX.TI.WBAMR.encode \
+    libOMX_Core
 
 # These are the hardware-specific settings that are stored in system properties.
 # Note that the only such settings should be the ones that are too low-level to
