@@ -13,7 +13,7 @@
 # limitations under the License.
 
 ## Include headers
-#TARGET_SPECIFIC_HEADER_PATH := device/lge/p970/include
+TARGET_SPECIFIC_HEADER_PATH := device/lge/p970/include
 
 ## inherit from the proprietary version
 -include vendor/lge/p970/BoardConfigVendor.mk
@@ -29,22 +29,29 @@ ARCH_ARM_HAVE_TLS_REGISTER := true
 ## Device specific
 OMAP_ENHANCEMENT := true
 TARGET_BOOTLOADER_BOARD_NAME := hub
-COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT -DTARGET_OMAP3
+COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT -DTARGET_OMAP3 -DOMAP_ENHANCEMENT_CPCAM -DOMAP_ENHANCEMENT_VTC
 BOARD_NEEDS_CUTILS_LOG := true
-BOARD_SYSFS_LIGHT_SENSOR := "/sys/devices/platform/i2c_omap.2/i2c-2/2-0060/leds/lcd-backlight/als"
+BOARD_SYSFS_LIGHT_SENSOR := "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0060/leds/lcd-backlight/als"
+COMMON_GLOBAL_CFLAGS += -DICS_AUDIO_BLOB -DICS_CAMERA_BLOB -DOMAP_ICS_CAMERA
+
+# Custom vibrator implementation credits to rmcc
+BOARD_HAS_VIBRATOR_IMPLEMENTATION := ../../device/lge/p970/configs/vibrator.c
 
 ## Kernel
-TARGET_PROVIDES_INIT_RC := true
-TARGET_PROVIDES_INIT_TARGET_RC := true
 BOARD_KERNEL_CMDLINE := 
 BOARD_KERNEL_BASE := 0x80000000
 BOARD_PAGE_SIZE := 0x00000800
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_CUSTOM_GRAPHICS := ../../../device/lge/p970/recovery/graphics.c
+TARGET_KERNEL_CONFIG := cyanogenmod_p970_defconfig
+TARGET_PREBUILT_KERNEL := device/lge/p970/prebuilt/kernel
 
 ## BT
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
+
+# FM
+BOARD_HAVE_FM_RADIO := true
 
 ## Touchscreen
 BOARD_USE_LEGACY_TOUCHSCREEN := true
@@ -76,11 +83,11 @@ BOARD_MOBILEDATA_INTERFACE_NAME := "vsnet0"
 
 ## WLAN
 BOARD_WLAN_DEVICE := bcm4329
-WIFI_DRIVER_FW_PATH_STA         := "/system/etc/wifi/fw_bcm4329.bin"
-WIFI_DRIVER_FW_PATH_AP          := "/system/etc/wifi/fw_bcm4329_ap.bin"
+WIFI_DRIVER_FW_PATH_STA         := "/system/etc/firmware/fw_bcm4329.bin"
+WIFI_DRIVER_FW_PATH_AP          := "/system/etc/firmware/fw_bcm4329_ap.bin"
 WIFI_DRIVER_MODULE_NAME         := "wireless"
 WIFI_DRIVER_MODULE_PATH         := "/system/lib/modules/wireless.ko"
-WIFI_DRIVER_MODULE_ARG          := "firmware_path=/system/etc/wifi/fw_bcm4329.bin nvram_path=/system/etc/wifi/nvram.txt config_path=/data/misc/wifi/config"
+WIFI_DRIVER_MODULE_ARG          := "firmware_path=/system/etc/firmware/fw_bcm4329.bin nvram_path=/system/etc/wifi/nvram.txt config_path=/data/misc/wifi/config"
 WPA_SUPPLICANT_VERSION          := VER_0_6_X
 WIFI_DRIVER_HAS_LGE_SOFTAP      := true
 BOARD_WPA_SUPPLICANT_DRIVER	:= WEXT
@@ -88,9 +95,7 @@ BOARD_WEXT_NO_COMBO_SCAN	:= true
 
 ## EGL
 BOARD_EGL_CFG := device/lge/p970/configs/egl.cfg
-COMMON_GLOBAL_CFLAGS += -DSURFACEFLINGER_FORCE_SCREEN_RELEASE
 USE_OPENGL_RENDERER := true
-COMMON_GLOBAL_CFLAGS += -DOVERLAY_NUM_REQBUFFERS=6
 
 ## Images
 TARGET_USERIMAGES_USE_EXT4 := true
@@ -98,10 +103,5 @@ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 665681920
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 1170259968
 BOARD_FLASH_BLOCK_SIZE := 131072
 
-## Bootanimation
-TARGET_BOOTANIMATION_PRELOAD := true
-TARGET_BOOTANIMATION_TEXTURE_CACHE := true
-TARGET_BOOTANIMATION_USE_RGB565 := true
-
 ## Charger
-BOARD_GLOBAL_CFLAGS += -DCHARGERMODE_CMDLINE_NAME='"rs"' -DCHARGERMODE_CMDLINE_VALUE='"c"'
+COMMON_GLOBAL_CFLAGS += -DBOARD_CHARGING_CMDLINE_NAME='"rs"' -DBOARD_CHARGING_CMDLINE_VALUE='"c"'

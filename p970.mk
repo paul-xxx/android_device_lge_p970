@@ -12,26 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# The gps config appropriate for this device
-$(call inherit-product, device/common/gps/gps_us_supl.mk)
-
 # Dalvik fix
 PRODUCT_TAGS += dalvik.gc.type-precise
 $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 
-# HDPI
-PRODUCT_LOCALES += hdpi
+# See comment at the top of this file. This is where the other
+# half of the device-specific product definition file takes care
+# of the aspects that require proprietary drivers that aren't
+# commonly available
+$(call inherit-product-if-exists, vendor/lge/p970/p970-vendor.mk)
 
 # Framework overlay
 DEVICE_PACKAGE_OVERLAYS += device/lge/p970/overlay
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/g-recovery:root/sbin/g-recovery \
-    $(LOCAL_PATH)/prebuilt/init.lge.rc:root/init.lge.rc \
-    $(LOCAL_PATH)/prebuilt/init.lge.usb.rc:root/init.lge.usb.rc \
-    $(LOCAL_PATH)/prebuilt/init.rc:root/init.rc \
-    $(LOCAL_PATH)/prebuilt/ueventd.lge.rc:root/ueventd.lge.rc \
+    $(LOCAL_PATH)/prebuilt/grecovery:root/sbin/grecovery \
+    $(LOCAL_PATH)/prebuilt/init.black.rc:root/init.black.rc \
+    $(LOCAL_PATH)/prebuilt/init.black.usb.rc:root/init.black.usb.rc \
+    $(LOCAL_PATH)/prebuilt/ueventd.black.rc:root/ueventd.black.rc \
     $(LOCAL_PATH)/configs/vold.fstab:system/etc/vold.fstab
 
 # Recovery
@@ -61,7 +60,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/gps_brcm_conf.xml:system/etc/gps_brcm_conf.xml \
     $(LOCAL_PATH)/configs/ipc_channels.config:system/etc/ipc_channels.config \
-    $(LOCAL_PATH)/configs/init.vsnet:system/bin/init.vsnet
+    $(LOCAL_PATH)/configs/init.vsnet:system/bin/init.vsnet \
+    $(LOCAL_PATH)/configs/init.vsnet-down:system/bin/init.vsnet-down
+
+# Radio fixes credits rmcc
+FRAMEWORKS_BASE_SUBDIRS += ../../$(LOCAL_PATH)/ril/
 
 # Wifi
 PRODUCT_COPY_FILES += \
@@ -72,29 +75,44 @@ PRODUCT_COPY_FILES += \
 
 # Media configuration
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
-    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml
+    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
+    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml
+
+# asound configs
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/asound.conf:system/etc/asound.conf
+
+# Charger mode
+PRODUCT_PACKAGES += \
+    charger \
+    charger_res_images
 
 # HW Hal
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
     audio.usb.default \
     lights.hub \
+    power.hub \
+    hwcomposer.omap3
 
 # Other
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory \
+    libomap_mm_library_jni \
     libaudioutils \
+    lgcpversion \
+    libtiutils \
     hciattach \
     librs_jni \
     hcidump \
     hcitool \
     wifimac \
+    libion \
     prb
 
 # OMX
 PRODUCT_PACKAGES += \
-    dspexec \
+    cexec.out \
     libbridge \
     libLCML \
     libOMX_Core \
@@ -128,9 +146,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.media.enc.jpeg.quality=100 \
     ro.kernel.android.checkjni=0 \
     ro.hardware.respect_als=true \
-    dalvik.vm.dexopt-data-only=1 \
     sys.usb.state=mass_storage,adb \
     persist.sys.usb.config=mass_storage,adb
+
+# Fix gapps FC's
+PRODUCT_PROPERTY_OVERRIDES += dalvik.vm.dexopt-data-only=1
 
 # Allow debug in GB ramdisk
 ADDITIONAL_DEFAULT_PROPERTIES += \
@@ -139,9 +159,3 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.debuggable=1 \
     persist.service.adb.enable=1 \
     persist.sys.usb.config=mass_storage,adb
-
-# See comment at the top of this file. This is where the other
-# half of the device-specific product definition file takes care
-# of the aspects that require proprietary drivers that aren't
-# commonly available
-$(call inherit-product-if-exists, vendor/lge/p970/p970-vendor.mk)
