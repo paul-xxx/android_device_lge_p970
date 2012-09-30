@@ -13,5 +13,5 @@
 # limitations under the License.
 
 ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),hub)
-include $(call first-makefiles-under,$(call my-dir))
+    include $(call first-makefiles-under,$(call my-dir))
 endif
