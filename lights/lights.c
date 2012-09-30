@@ -45,45 +45,45 @@ char const*const LCD_STATE
         = "/sys/class/leds/lcd-backlight/onoff";
 
 char const*const BUTTON_BRIGHTNESS
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_brightness";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/led_brightness";
 
 char const*const BUTTON_STATE
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_onoff";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/led_onoff";
 char const*const BUTTON_SYNC
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/led_sync";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/led_sync";
 
 char const*const BUTTON_PULSE
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/blink_enable";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/blink_enable";
 
 char const*const BUTTON_MENU1
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x06";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x06";
 char const*const BUTTON_MENU2
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x07";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x07";
 
 char const*const BUTTON_HOME1
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0D";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x0D";
 char const*const BUTTON_HOME2
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0E";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x0E";
 
 char const*const BUTTON_BACK1
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x10";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x10";
 char const*const BUTTON_BACK2
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x11";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x11";
 
 char const*const BUTTON_SEARCH1
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x03";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x03";
 char const*const BUTTON_SEARCH2
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x04";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x04";
 
 char const*const BUTTON_BLUELEFT1
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x09";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x09";
 char const*const BUTTON_BLUELEFT2
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x0A";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x0A";
 
 char const*const BUTTON_BLUERIGHT1
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x13";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x13";
 char const*const BUTTON_BLUERIGHT2
-        = "/sys/devices/platform/i2c_omap.2/i2c-2/2-001a/0x14";
+        = "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x14";
 
 /**
  * device methods
@@ -317,7 +317,7 @@ struct hw_module_t HAL_MODULE_INFO_SYM = {
     .version_major = 1,
     .version_minor = 0,
     .id = LIGHTS_HARDWARE_MODULE_ID,
-    .name = "LGE P970 lights Module",
-    .author = "BPaul - AOSP Project",
+    .name = "LGE P970 lights HW Hal Module",
+    .author = "BPaul - Black JB Project",
     .methods = &lights_module_methods,
 };
