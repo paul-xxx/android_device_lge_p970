@@ -10,7 +10,7 @@ LOCAL_SRC_FILES := hwc.c
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_MODULE := hwcomposer.$(TARGET_BOARD_PLATFORM)
+LOCAL_MODULE := hwcomposer.omap3
 LOCAL_MODULE_TAGS := optional
 LOCAL_CFLAGS := -DLOG_TAG=\"ti_hwc\"
 

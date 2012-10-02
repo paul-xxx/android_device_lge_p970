@@ -22,5 +22,3 @@
 
 add_lunch_combo cm_p970-eng
 add_lunch_combo cm_p970-userdebug
-#add_lunch_combo aokp_p970-eng
-#add_lunch_combo aokp_p970-userdebug
