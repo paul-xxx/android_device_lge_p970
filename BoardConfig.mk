@@ -28,13 +28,13 @@ ARCH_ARM_HAVE_TLS_REGISTER := true
 
 ## Device specific
 OMAP_ENHANCEMENT := true
-TARGET_BOOTLOADER_BOARD_NAME := hub
+TARGET_BOOTLOADER_BOARD_NAME := p970
 COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT -DTARGET_OMAP3 -DOMAP_ENHANCEMENT_CPCAM -DOMAP_ENHANCEMENT_VTC
 BOARD_NEEDS_CUTILS_LOG := true
 BOARD_SYSFS_LIGHT_SENSOR := "/sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0060/leds/lcd-backlight/als"
 COMMON_GLOBAL_CFLAGS += -DICS_AUDIO_BLOB -DICS_CAMERA_BLOB -DOMAP_ICS_CAMERA
 
-# Custom vibrator implementation credits to rmcc
+## Custom vibrator implementation thanks to rmcc
 BOARD_HAS_VIBRATOR_IMPLEMENTATION := ../../device/lge/p970/configs/vibrator.c
 
 ## Kernel
@@ -50,7 +50,7 @@ TARGET_PREBUILT_KERNEL := device/lge/p970/prebuilt/kernel
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
 
-# FM
+## FM
 BOARD_HAVE_FM_RADIO := true
 
 ## Touchscreen
