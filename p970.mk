@@ -27,7 +27,7 @@ DEVICE_PACKAGE_OVERLAYS += device/lge/p970/overlay
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/grecovery:root/sbin/grecovery \
+    $(LOCAL_PATH)/prebuilt/g-recovery:root/sbin/g-recovery \
     $(LOCAL_PATH)/prebuilt/init.black.rc:root/init.black.rc \
     $(LOCAL_PATH)/prebuilt/init.black.usb.rc:root/init.black.usb.rc \
     $(LOCAL_PATH)/prebuilt/ueventd.black.rc:root/ueventd.black.rc \
@@ -54,7 +54,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
-    frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml
 
 # RIL and GPS
 PRODUCT_COPY_FILES += \
@@ -91,8 +90,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
     audio.usb.default \
-    lights.hub \
-    power.hub \
+    lights.p970 \
     hwcomposer.omap3
 
 # Other
@@ -101,23 +99,13 @@ PRODUCT_PACKAGES += \
     libomap_mm_library_jni \
     libaudioutils \
     lgcpversion \
-    libtiutils \
     hciattach \
     librs_jni \
     hcidump \
     hcitool \
     wifimac \
-    libion \
+    libRS \
     prb
-
-# OMX
-PRODUCT_PACKAGES += \
-    libOMX.TI.AAC.encode \
-    libOMX.TI.AMR.encode \
-    libOMX.TI.Video.Decoder \
-    libOMX.TI.Video.encoder \
-    libOMX.TI.WBAMR.encode \
-    libOMX_Core
 
 # These are the hardware-specific settings that are stored in system properties.
 # Note that the only such settings should be the ones that are too low-level to
@@ -131,16 +119,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.media.enc.jpeg.quality=100 \
     ro.kernel.android.checkjni=0 \
     ro.hardware.respect_als=true \
-    sys.usb.state=mass_storage,adb \
+    dalvik.vm.dexopt-data-only=1 \
     persist.sys.usb.config=mass_storage,adb
 
-# Fix gapps FC's
-PRODUCT_PROPERTY_OVERRIDES += dalvik.vm.dexopt-data-only=1
-
-# Allow debug in GB ramdisk
-ADDITIONAL_DEFAULT_PROPERTIES += \
-    ro.secure=0 \
-    ro.allow.mock.location=1 \
-    ro.debuggable=1 \
-    persist.service.adb.enable=1 \
-    persist.sys.usb.config=mass_storage,adb
+# New charger images
+PRODUCT_COPY_FILES += \
+$(shell test -d $(LOCAL_PATH)/prebuilt/chargerimg && find $(LOCAL_PATH)/prebuilt/chargerimg -name '*.png' -printf '%p:root/res/images/charger/%f ')
