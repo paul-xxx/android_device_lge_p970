@@ -22,4 +22,5 @@ $(call inherit-product, device/lge/p970/full_p970.mk)
 PRODUCT_NAME := cm_p970
 PRODUCT_DEVICE := p970
 PRODUCT_RELEASE_NAME := OptimusBlack
+PRODUCT_VERSION_DEVICE_SPECIFIC :=
 -include vendor/cm/config/common_versions.mk
