@@ -37,6 +37,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh
 
+# Media configuration
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
+    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml
+
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
@@ -44,16 +49,15 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
-    frameworks/native/data/etc/android.hardware.location.xml:system/etc/permissions/android.hardware.location.xml \
-    frameworks/native/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
-    frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
     frameworks/native/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
+    frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
+    frameworks/native/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
     frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.xml \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
-    frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
+    frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml
 
 # RIL and GPS
 PRODUCT_COPY_FILES += \
@@ -62,7 +66,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/init.vsnet:system/bin/init.vsnet \
     $(LOCAL_PATH)/configs/init.vsnet-down:system/bin/init.vsnet-down
 
-# Radio fixes credits rmcc
+# Radio framework fixes
 FRAMEWORKS_BASE_SUBDIRS += ../../$(LOCAL_PATH)/ril/
 
 # Wifi
@@ -71,11 +75,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
     $(LOCAL_PATH)/configs/nvram.txt:system/etc/wifi/nvram.txt \
     $(LOCAL_PATH)/configs/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf
-
-# Media configuration
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
-    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml
 
 # asound configs
 PRODUCT_COPY_FILES += \
@@ -90,22 +89,50 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
     audio.usb.default \
-    lights.p970 \
-    hwcomposer.omap3
-
-# Other
-PRODUCT_PACKAGES += \
-    com.android.future.usb.accessory \
+    hwcomposer.omap3 \
     libomap_mm_library_jni \
-    libaudioutils \
+    lights.p970 \
+    power.p970 \
     lgcpversion \
-    hciattach \
-    librs_jni \
-    hcidump \
-    hcitool \
+    libaudioutils \
+    libtiutils \
+    libion \
     wifimac \
-    libRS \
     prb
+
+# OMX components
+PRODUCT_PACKAGES += \
+    cexec.out \
+    libstagefrighthw \
+    libbridge \
+    libPERF \
+    libOMX_Core \
+    libLCML \
+    libOMX.TI.Video.Decoder \
+    libOMX.TI.Video.encoder \
+    libOMX.TI.WBAMR.decode \
+    libOMX.TI.AAC.encode \
+    libOMX.TI.G722.decode \
+    libOMX.TI.MP3.decode \
+    libOMX.TI.WMA.decode \
+    libOMX.TI.Video.encoder \
+    libOMX.TI.WBAMR.encode \
+    libOMX.TI.G729.encode \
+    libOMX.TI.AAC.decode \
+    libOMX.TI.VPP \
+    libOMX.TI.G711.encode \
+    libOMX.TI.JPEG.encoder \
+    libOMX.TI.G711.decode \
+    libOMX.TI.ILBC.decode \
+    libOMX.TI.ILBC.encode \
+    libOMX.TI.AMR.encode \
+    libOMX.TI.G722.encode \
+    libOMX.TI.JPEG.decoder \
+    libOMX.TI.G726.encode \
+    libOMX.TI.G729.decode \
+    libOMX.TI.Video.Decoder \
+    libOMX.TI.AMR.decode \
+    libOMX.TI.G726.decode
 
 # These are the hardware-specific settings that are stored in system properties.
 # Note that the only such settings should be the ones that are too low-level to
@@ -120,7 +147,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.kernel.android.checkjni=0 \
     ro.hardware.respect_als=true \
     dalvik.vm.dexopt-data-only=1 \
-    persist.sys.usb.config=mass_storage,adb
+    persist.sys.usb.config=mass_storage,adb \
+    sys.mem.max_hidden_apps=5
 
 # New charger images
 PRODUCT_COPY_FILES += \
