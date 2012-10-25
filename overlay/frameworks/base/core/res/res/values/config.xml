@@ -28,7 +28,7 @@
     <bool name="config_unplugTurnsOnScreen">true</bool>
 
     <!-- enable electron beam -->
-    <bool name="config_animateScreenLights">true</bool>
+    <bool name="config_animateScreenLights">false</bool>
 
     <!-- Disable turn on display when push on menu button -->
     <bool name="config_disableMenuKeyInLockScreen">true</bool>
@@ -51,12 +51,9 @@
          than the size of the config_autoBrightnessLevels array.
     -->
     <integer-array name="config_autoBrightnessLcdBacklightValues">
-        <item>20</item>
-        <item>35</item>
+        <item>25</item>
         <item>55</item>
         <item>70</item>
-        <item>110</item>
-        <item>255</item>
     </integer-array>
 
     <!-- Array of output values for button backlight corresponding to the LUX values
@@ -66,9 +63,6 @@
     <integer-array name="config_autoBrightnessButtonBacklightValues">
         <item>255</item>
         <item>255</item>
-        <item>255</item>
-        <item>0</item>
-        <item>0</item>
         <item>0</item>
     </integer-array>
 
@@ -77,11 +71,8 @@
          than the size of the config_autoBrightnessLevels array.
          This must be overridden in platform specific overlays -->
     <integer-array name="config_autoBrightnessKeyboardBacklightValues">
-        <item>0</item>
-        <item>0</item>
-        <item>0</item>
-        <item>0</item>
-        <item>0</item>
+        <item>255</item>
+        <item>255</item>
         <item>0</item>
     </integer-array>
 
@@ -157,5 +148,32 @@
 	<item>7</item> 
     </integer-array>
 
+    <!-- Boolean indicating whether the start command should be called on the wireless interface
+                  when starting the SoftAp -->
+    <bool name="config_wifiApStartInterface">true</bool>
+
+    <!-- Default color for notification LED. -->
+    <color name="config_defaultNotificationColor">#ff0000ff</color>
+
+    <!-- Default LED on time for notification LED in milliseconds. -->
+    <integer name="config_defaultNotificationLedOn">500</integer>
+
+    <!-- Default LED off time for notification LED in milliseconds. -->
+    <integer name="config_defaultNotificationLedOff">2000</integer>
+
+    <!-- Default value for led color when battery is low on charge -->
+    <integer name="config_notificationsBatteryLowARGB">0xFF000000</integer>
+
+    <!-- Default value for led color when battery is medium charged -->
+    <integer name="config_notificationsBatteryMediumARGB">0xFF000000</integer>
+
+    <!-- Default value for led color when battery is fully charged -->
+    <integer name="config_notificationsBatteryFullARGB">0xFFFF0000</integer>
+
+    <!-- Default value for LED on time when the battery is low on charge in miliseconds -->
+    <integer name="config_notificationsBatteryLedOn">0</integer>
+
+    <!-- Is the notification LED intrusive? Used to decide if there should be a disable option -->
+    <bool name="config_intrusiveNotificationLed">true</bool>
 
 </resources>
