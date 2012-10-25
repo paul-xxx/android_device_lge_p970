@@ -3,11 +3,11 @@
 #
 
 # RIL
-rild.libpath=/system/lib/lge-ril.so
-rild.libargs=-d /dev/ttyspi0
 ro.telephony.call_ring.multiple=false
 ro.telephony.call_ring.delay=3000
 ro.telephony.call_ring.absent=true
+rild.libpath=/system/lib/lge-ril.so
+rild.libargs=-d /dev/ttyspi0
 mobiledata.interfaces=vsnet0,vsnet1
 ro.telephony.ril_class=LGEInfineon
 
