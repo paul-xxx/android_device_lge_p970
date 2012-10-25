@@ -1,6 +1,8 @@
 # HWC under heavy development and should not be included in builds for now
 LOCAL_PATH := $(call my-dir)
 
+# HAL module implementation, not prelinked and stored in
+# hw/<HWCOMPOSE_HARDWARE_MODULE_ID>.<ro.product.board>.so
 include $(CLEAR_VARS)
 LOCAL_PRELINK_MODULE := false
 LOCAL_ARM_MODE := arm
@@ -10,12 +12,10 @@ LOCAL_SRC_FILES := hwc.c
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_MODULE := hwcomposer.omap3
+LOCAL_MODULE := hwcomposer.black
 LOCAL_MODULE_TAGS := optional
 LOCAL_CFLAGS := -DLOG_TAG=\"ti_hwc\"
-
-ifdef ENABLE_DEBUGING
-LOCAL_CFLAGS += -DLOG_NDEBUG=0
-endif
+# LOG_NDEBUG=0 means verbose logging enabled
+# LOCAL_CFLAGS += -DLOG_NDEBUG=0
 
 include $(BUILD_SHARED_LIBRARY)
