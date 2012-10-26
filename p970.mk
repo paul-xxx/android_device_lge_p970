@@ -12,9 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Dalvik fix
-PRODUCT_TAGS += dalvik.gc.type-precise
-$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
+# Inherit from those products. Most specific first.
+$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+
+# Inherit from those products. Most specific non first.
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full.mk)
+
+# The gps config appropriate for this device
+$(call inherit-product, device/common/gps/gps_us_supl.mk)
 
 # See comment at the top of this file. This is where the other
 # half of the device-specific product definition file takes care
@@ -39,8 +44,8 @@ PRODUCT_COPY_FILES += \
 
 # Media configuration
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
-    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml
+    $(LOCAL_PATH)/media_profiles.xml:system/etc/media_profiles.xml \
+    $(LOCAL_PATH)/media_codecs.xml:system/etc/media_codecs.xml
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
@@ -150,6 +155,20 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mass_storage,adb \
     sys.mem.max_hidden_apps=5
 
+# Dalvik fix
+PRODUCT_TAGS += dalvik.gc.type-precise
+$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
+
 # New charger images
 PRODUCT_COPY_FILES += \
 $(shell test -d $(LOCAL_PATH)/prebuilt/chargerimg && find $(LOCAL_PATH)/prebuilt/chargerimg -name '*.png' -printf '%p:root/res/images/charger/%f ')
+
+# P970 uses high-density artwork where available
+PRODUCT_AAPT_CONFIG := normal hdpi
+
+# Discard inherited values and use our own instead.
+PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
+PRODUCT_NAME := full_p970
+PRODUCT_DEVICE := p970
+PRODUCT_MODEL := LG-P970
+PRODUCT_MANUFACTURER := LGE

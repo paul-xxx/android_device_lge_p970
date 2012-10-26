@@ -16,7 +16,7 @@
 # Also specify phone tech before including full_phone
 $(call inherit-product, vendor/cm/config/gsm.mk)
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
-$(call inherit-product, device/lge/p970/full_p970.mk)
+$(call inherit-product, device/lge/p970/p970.mk)
 
 # Device identifier. This must come after all inclusions
 PRODUCT_NAME := cm_p970
