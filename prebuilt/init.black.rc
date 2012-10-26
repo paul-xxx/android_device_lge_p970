@@ -24,6 +24,7 @@ on init
 
     chown system system /sys/class/leds/lcd-backlight/als
 
+    # Increase readahead buffers on MMC devices
     write /sys/block/mmcblk0/bdi/read_ahead_kb 1024
     write /sys/block/mmcblk1/bdi/read_ahead_kb 1024
 
@@ -108,7 +109,7 @@ on boot
     write /sys/bus/usb/devices/usb1/power/autosuspend_delay_ms 0
     write /sys/bus/usb/devices/usb2/power/autosuspend_delay_ms 0
 
-    # Change permissions for alsa nodes
+    # Permissions for for alsa nodes
     symlink /dev/snd/pcmC0D0c /dev/pcmC0D0c
     symlink /dev/snd/pcmC0D0p /dev/pcmC0D0p
     symlink /dev/snd/controlC0 /dev/controlC0
@@ -134,7 +135,7 @@ on boot
     chmod 0660 /dev/ttyspi1
     chown radio radio /dev/ttyspi1
     
-    # Permissions for bridge.  Symlink search directory
+    # Permissions for DSP Bridge
     chmod 0777 /dev/DspBridge
 
     # Permissions for Camera
@@ -175,7 +176,6 @@ on boot
     # Permissions for Previewer and Resizer
     chmod 0777 /dev/omap-previewer
     chmod 0777 /dev/omap-resizer
-
     chmod 0777 /dev/video6
     chmod 0777 /dev/video10
     chmod 0777 /dev/omap-prev2resz
@@ -189,13 +189,13 @@ on boot
     # SGX driver
     chmod 0666 /dev/pvrsrvkm
     
-    # Permission factory test
+    # Permissions for factory test
     chmod 0775 /proc/driver/hmuic
     chown system system /proc/driver/hmuic
     chmod 0644 /sys/devices/platform/omap/omap_i2c.1/i2c-1/1-004a/twl4030_keypad/key_test_mode
     chown system system /sys/devices/platform/omap/omap_i2c.1/i2c-1/1-004a/twl4030_keypad/key_test_mode
     
-    # LED Permission is modified.
+    # Permissions for Display
     chmod 0664 /sys/devices/platform/omapdss/display0/name
     chmod 0664 /sys/devices/platform/omapdss/display1/name
     chmod 0664 /sys/devices/platform/omapdss/display0/enabled
@@ -222,6 +222,7 @@ on boot
     chmod 0644 /sys/devices/platform/omapdss/manager0/alpha_blending_enabled
     chmod 0644 /sys/devices/platform/omapdss/manager1/alpha_blending_enabled
 
+    # Permissions for LEDS
     chmod 0664 /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0060/leds/lcd-backlight/als_option
     chown system system /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0060/leds/lcd-backlight/als_option
     chmod 0664 /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0060/leds/lcd-backlight/onoff
@@ -232,9 +233,7 @@ on boot
     chown system system /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0060/leds/lcd-backlight/als_control
     chmod 0664 /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0060/leds/lcd-backlight/als
     chown system system /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0060/leds/lcd-backlight/als
-
     write /sys/devices/platform/omapdss/manager0/alpha_blending_enabled 1
-
     chmod 0664 /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0036/state
     chown system system /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0036/state
     chmod 0664 /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x15
@@ -297,6 +296,8 @@ on boot
     chown system system /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0020/fw
     chmod 0664 /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0020/gripsuppression
     chown system system /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0020/gripsuppression
+
+    # Permissions for LDC Leds
     chmod 0664 /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/als_option
     chown system system /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/als_option
     chmod 0664 /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/onoff
@@ -308,6 +309,7 @@ on boot
     chmod 0664 /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/als
     chown system system /sys/bus/i2c/devices/2-0060/leds/lcd-backlight/als
 
+    # Permissions for Sensors
     chown system system /dev/akm8973_daemon
     chown system system /dev/kxtf9_accel
     chown system system /dev/akm8973_aot
@@ -343,20 +345,28 @@ on boot
     chmod 644 /sys/devices/platform/soc-audio/TWL4030_I2S/codec_reg
     chmod 644 /sys/devices/platform/soc-audio/TWL4030_PCM/codec_reg
     
-    # ALS
+    # Permissions for ALS
     chmod 0664 /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0060/leds/lcd-backlight/als
     chown system system /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-0060/leds/lcd-backlight/als
 
     # Batt gauge error detection
     chmod 0666 /sys/bus/platform/drivers/twl4030_bci/twl4030_bci/gauge_if
 
+    # Enabling sleep in idle path
     write /sys/power/sleep_while_idle 1
+
+    # Enabling Off mode
     write /sys/power/enable_off_mode 1
+
+    # Enabling voltage off while idle
     write /sys/power/voltage_off_while_idle 1
 
+    # Permissions for setting the DSP Frequency
+    chown media root /sys/power/dsp_freq
     chown media system /sys/devices/platform/omap3isp/isp_reserve
     chown media media /sys/devices/platform/omapdss/manager0/dmb_coefs
 
+    # Permissions for GPS
     chown system system /sys/devices/platform/hub_gps_gpio/poweron
     chown system system /sys/devices/platform/hub_gps_gpio/reset
     mkdir /data/gps
@@ -370,17 +380,17 @@ on boot
     mkdir /data/cache
     chmod 777 /data/cache
 
+    # Permissions for LCD lights
+    chown system system /sys/class/leds/lcd-backlight/brightness
+    chown system system /sys/class/leds/lcd-backlight/onoff
+
+    # Permissions for Bluetooth
     chmod 0660 /dev/ttyHS2
     chown bluetooth bluetooth /dev/ttyHS2
     chmod 0660 /sys/class/rfkill/rfkill0/state
     chmod 0660 /sys/class/rfkill/rfkill0/type
-    chmod 0660 /sys/class/rfkill/rfkill1/state
-    chmod 0660 /sys/class/rfkill/rfkill1/type
-
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill1/state
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill1/type
     chmod 0666 /sys/devices/platform/bd_address/bdaddr_if
     write /sys/class/rfkill/rfkill0/state 0
 
