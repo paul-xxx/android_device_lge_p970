@@ -15,9 +15,6 @@
 # Inherit from those products. Most specific first.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
-# Inherit from those products. Most specific non first.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full.mk)
-
 # The gps config appropriate for this device
 $(call inherit-product, device/common/gps/gps_us_supl.mk)
 
@@ -41,11 +38,6 @@ PRODUCT_COPY_FILES += \
 # Recovery
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh
-
-# Media configuration
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/media_profiles.xml:system/etc/media_profiles.xml \
-    $(LOCAL_PATH)/media_codecs.xml:system/etc/media_codecs.xml
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
@@ -155,6 +147,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mass_storage,adb \
     sys.mem.max_hidden_apps=5
 
+# Media configuration
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
+    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml
+
 # Dalvik fix
 PRODUCT_TAGS += dalvik.gc.type-precise
 $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
@@ -172,3 +169,9 @@ PRODUCT_NAME := full_p970
 PRODUCT_DEVICE := p970
 PRODUCT_MODEL := LG-P970
 PRODUCT_MANUFACTURER := LGE
+
+# Include apps
+$(call inherit-product-if-exists, vendor/paul/black/black-vendor-apps.mk)
+
+# Inherit from those products. Most specific non first.
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full.mk)
