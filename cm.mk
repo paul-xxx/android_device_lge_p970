@@ -21,6 +21,7 @@ $(call inherit-product, device/lge/p970/p970.mk)
 # Device identifier. This must come after all inclusions
 PRODUCT_NAME := cm_p970
 PRODUCT_DEVICE := p970
+PRODUCT_MODEL := LG-P970
 PRODUCT_RELEASE_NAME := OptimusBlack
 PRODUCT_VERSION_DEVICE_SPECIFIC :=
 -include vendor/cm/config/common_versions.mk
