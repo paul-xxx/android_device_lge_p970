@@ -12,58 +12,49 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Inherit from those products. Most specific first.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 # The gps config appropriate for this device
 $(call inherit-product, device/common/gps/gps_us_supl.mk)
 
-# See comment at the top of this file. This is where the other
-# half of the device-specific product definition file takes care
-# of the aspects that require proprietary drivers that aren't
-# commonly available
 $(call inherit-product-if-exists, vendor/lge/p970/p970-vendor.mk)
 
-# Framework overlay
 DEVICE_PACKAGE_OVERLAYS += device/lge/p970/overlay
 
-# Ramdisk
+# Dummy file to help RM identify the model
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilt/g-recovery:root/sbin/g-recovery \
+    $(LOCAL_PATH)/prebuilt/dummy-rm:root/bootimages/ON_480x800_08fps_0000.rle
+
+PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/init.black.rc:root/init.black.rc \
     $(LOCAL_PATH)/prebuilt/init.black.usb.rc:root/init.black.usb.rc \
     $(LOCAL_PATH)/prebuilt/ueventd.black.rc:root/ueventd.black.rc \
     $(LOCAL_PATH)/configs/vold.fstab:system/etc/vold.fstab
 
-# Recovery
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh
 
-# These are the hardware-specific features
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
+    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml
+
+# Permission files
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
-    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
+    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
+    frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
+    frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
     frameworks/native/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
     frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
     frameworks/native/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
-    frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
-    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
-    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.xml \
-    frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
-    frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
-    frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml
+    frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
+    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
+    frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml
 
-# RIL and GPS
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/gps_brcm_conf.xml:system/etc/gps_brcm_conf.xml \
-    $(LOCAL_PATH)/configs/ipc_channels.config:system/etc/ipc_channels.config \
-    $(LOCAL_PATH)/configs/init.vsnet:system/bin/init.vsnet \
-    $(LOCAL_PATH)/configs/init.vsnet-down:system/bin/init.vsnet-down
-
-# Radio framework fixes
+# Radio fixes
 FRAMEWORKS_BASE_SUBDIRS += ../../$(LOCAL_PATH)/ril/
 
 # Wifi
@@ -73,7 +64,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/nvram.txt:system/etc/wifi/nvram.txt \
     $(LOCAL_PATH)/configs/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf
 
-# asound configs
+# Alsa configs
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/asound.conf:system/etc/asound.conf
 
@@ -82,26 +73,27 @@ PRODUCT_PACKAGES += \
     charger \
     charger_res_images
 
-# HW Hal
+# HAL Modules
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
-    audio.usb.default \
-    hwcomposer.omap3 \
-    libomap_mm_library_jni \
-    lights.p970 \
     power.p970 \
+    hwcomposer.p970 \
+    lights.p970 \
+    prb \
     lgcpversion \
+    wifimac
+
+PRODUCT_PACKAGES += \
     libaudioutils \
     libtiutils \
     libion \
-    wifimac \
-    prb
+    libomap_mm_library_jni
 
 # OMX components
 PRODUCT_PACKAGES += \
-    cexec.out \
     libstagefrighthw \
     libbridge \
+    cexec.out \
     libPERF \
     libOMX_Core \
     libLCML \
@@ -136,7 +128,7 @@ PRODUCT_PACKAGES += \
 # be reachable from resources or other mechanisms.
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0 \
-    wifi.supplicant_scan_interval=45 \
+    wifi.supplicant_scan_interval=20 \
     ro.sf.lcd_density=240 \
     ro.opengles.version=131072 \
     com.ti.omap_enhancement=true \
@@ -147,31 +139,17 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mass_storage,adb \
     sys.mem.max_hidden_apps=5
 
-# Media configuration
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
-    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml
-
-# Dalvik fix
-PRODUCT_TAGS += dalvik.gc.type-precise
-$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
-
 # New charger images
 PRODUCT_COPY_FILES += \
-$(shell test -d $(LOCAL_PATH)/prebuilt/chargerimg && find $(LOCAL_PATH)/prebuilt/chargerimg -name '*.png' -printf '%p:root/res/images/charger/%f ')
+$(shell test -d $(LOCAL_PATH)/prebuilt/charger && find $(LOCAL_PATH)/prebuilt/charger -name '*.png' -printf '%p:root/res/images/charger/%f ')
 
-# P970 uses high-density artwork where available
+$(call inherit-product, build/target/product/full.mk)
+$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
+
 PRODUCT_AAPT_CONFIG := normal hdpi
 
-# Discard inherited values and use our own instead.
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := full_p970
 PRODUCT_DEVICE := p970
 PRODUCT_MODEL := LG-P970
 PRODUCT_MANUFACTURER := LGE
-
-# Include apps
-$(call inherit-product-if-exists, vendor/paul/black/black-vendor-apps.mk)
-
-# Inherit from those products. Most specific non first.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full.mk)
