@@ -1,5 +1,7 @@
 bin/fw3a_core
 bin/glgps
+bin/init.vsnet
+bin/init.vsnet-down
 bin/pvrsrvctl
 bin/pvrsrvinit
 bin/rild
@@ -10,6 +12,8 @@ etc/omapcam/cid43_imx072_awb_tuning.bin
 etc/omapcam/fw3a.conf
 etc/omapcam/imx072.rev
 etc/omapcam/imx072_dtp.dat
+etc/gps_brcm_conf.xml
+etc/ipc_channels.config
 lib/dsp/720p_divx_mp4vdec_sn.dll64P
 lib/dsp/720p_h264vdec_sn.dll64P
 lib/dsp/720p_h264venc_sn.dll64P
@@ -90,7 +94,6 @@ usr/keylayout/Hookkey.kl
 usr/keylayout/hub_synaptics_touch.kl
 usr/keylayout/twl4030_pwrbutton.kl
 usr/keylayout/TWL4030_Keypad.kl
-vendor/lib/drm/libdrmwvmplugin.so
 vendor/lib/egl/libEGL_POWERVR_SGX530_125.so
 vendor/lib/egl/libGLESv1_CM_POWERVR_SGX530_125.so
 vendor/lib/egl/libGLESv2_POWERVR_SGX530_125.so
@@ -103,6 +106,3 @@ vendor/lib/libPVRScopeServices.so
 vendor/lib/libsrv_init.so
 vendor/lib/libsrv_um.so
 vendor/lib/libusc.so
-vendor/lib/libwvdrm_L3.so
-vendor/lib/libwvm.so
-vendor/lib/libWVStreamControlAPI_L3.so
