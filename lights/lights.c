@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The CyanogenMod Project
+ * Copyright (C) 2011 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,22 +119,6 @@ write_int(char const* path, int value)
 }
 
 static int
-read_int(char const* path)
-{
-    int fd;
-
-    fd = open(path, O_RDONLY);
-    if (fd >= 0) {
-        char buffer[1];
-        int amt = read(fd, buffer, 1);
-        close(fd);
-        return amt == -1 ? -errno : atoi(buffer);
-    } else {
-        return -errno;
-    }
-}
-
-static int
 is_lit(struct light_state_t const* state)
 {
     return state->color & 0x00ffffff;
@@ -154,15 +138,15 @@ set_light_buttons(struct light_device_t* dev,
 {
     int err = 0;
     int on = is_lit(state);
-    long value = rgb_to_brightness(state);
+    long value = rgb_to_brightness(state) ? 40 : 0;
 
     ALOGV("Setting button brightness to %ld",value);
 
     pthread_mutex_lock(&g_lock);
-    err = write_int(BUTTON_BRIGHTNESS, (int)value);
-    /*if (!err) {
-        err = write_int(BUTTON_STATE, value ? 1 : 0);
-    }*/
+    write_int(BUTTON_SYNC, 1);
+    write_int(BUTTON_BRIGHTNESS, (int)value);
+    err = write_int(BUTTON_STATE, value ? 1 : 0);
+    write_int(BUTTON_SYNC, 0);
     pthread_mutex_unlock(&g_lock);
     return err;
 }
@@ -201,6 +185,11 @@ set_light_notifications(struct light_device_t* dev,
     green = (state->color >> 8) & 0xff;
     blue = (state->color) & 0xff;
 
+    /* Predominant color wins */
+    if (blue > green) green = 0;
+    if (blue > red) red = 0;
+    if (red > green) green = 0;
+
     ALOGV("Calling notification light with state %d",on);
     pthread_mutex_lock(&g_lock);
     if (!on) {
@@ -236,19 +225,6 @@ set_light_notifications(struct light_device_t* dev,
     return err;
 }
 
-/*static int
-set_light_attention(struct light_device_t* dev,
-        struct light_state_t const* state)
-{
-    int err = 0;
-    int on = is_lit(state);
-    ALOGV("Calling attention light with state %d",on);
-    pthread_mutex_lock(&g_lock);
-    err = write_int(BUTTON_PULSE, on ? 1000 : 0);
-    pthread_mutex_unlock(&g_lock);
-    return err;
-}*/
-
 /** Close the lights device */
 static int
 close_lights(struct light_device_t *dev)
@@ -279,9 +255,6 @@ static int open_lights(const struct hw_module_t* module, char const* name,
     else if (0 == strcmp(LIGHT_ID_BUTTONS, name)) {
         set_light = set_light_buttons;
     }
-    /*else if (0 == strcmp(LIGHT_ID_ATTENTION, name)) {
-        set_light = set_light_attention;
-    }*/
     else if (0 == strcmp(LIGHT_ID_NOTIFICATIONS, name)) {
         set_light = set_light_notifications;
     }
@@ -317,7 +290,7 @@ struct hw_module_t HAL_MODULE_INFO_SYM = {
     .version_major = 1,
     .version_minor = 0,
     .id = LIGHTS_HARDWARE_MODULE_ID,
-    .name = "LGE P970 lights HW Hal Module",
-    .author = "BPaul - Black JB Project",
+    .name = "LGE P970 lights Module",
+    .author = "CyanogenMod Project",
     .methods = &lights_module_methods,
 };
