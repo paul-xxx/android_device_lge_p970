@@ -1,7 +1,0 @@
-[
- {
-   "repository": "lge-kernel-sniper",
-   "target_path": "kernel/lge/p970",
-   "branch": "android-omap3-3.0"
- }
-]
