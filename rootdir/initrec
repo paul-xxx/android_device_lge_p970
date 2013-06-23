@@ -1,0 +1,34 @@
+#!/system/xbin/sh
+
+# Disable blinking
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/blink_enable
+
+# Disable all leds
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x06
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x0D
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x10
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x03
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x07
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x0E
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x11
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x04
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x09
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x0E
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x13
+echo 0 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x14
+
+cat /dev/input/event1 > /dev/keycheck&
+sleep 3
+kill -9 $!
+if [ -s /dev/keycheck -o -e /cache/recovery/boot ]
+	then
+	# Enable blue leds
+	echo 255 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x09
+	echo 255 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x0E
+	echo 255 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x13
+	echo 255 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x14
+	# mv file
+	rm /cache/recovery/boot
+	sleep 1
+	reboot recovery
+fi
