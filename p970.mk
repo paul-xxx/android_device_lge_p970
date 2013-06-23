@@ -7,15 +7,20 @@ $(call inherit-product-if-exists, vendor/lge/p970/p970-vendor.mk)
 
 DEVICE_PACKAGE_OVERLAYS += device/lge/p970/overlay
 
-## Dummy file to help RM identify the model
+# Dummy file to help RM identify the model
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/dummy-rm:root/bootimages/ON_480x800_08fps_0000.rle
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/init.p970.rc:root/init.black.rc \
-    $(LOCAL_PATH)/init.p970.usb.rc:root/init.black.usb.rc \
-    $(LOCAL_PATH)/ueventd.p970.rc:root/ueventd.black.rc \
+    $(LOCAL_PATH)/rootdir/fstab.black:root/fstab.black \
+    $(LOCAL_PATH)/rootdir/init.black.rc:root/init.black.rc \
+    $(LOCAL_PATH)/rootdir/init.black.usb.rc:root/init.black.usb.rc \
+    $(LOCAL_PATH)/rootdir/ueventd.black.rc:root/ueventd.black.rc \
     $(LOCAL_PATH)/configs/vold.fstab:system/etc/vold.fstab
+
+# New recovery rebooter
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/initrec:system/bin/initrec
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh
@@ -40,35 +45,10 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml
 
-# RIL stuffs
+# Wifi
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/ipc_channels.config:system/etc/ipc_channels.config \
-    $(LOCAL_PATH)/init.vsnet:system/bin/init.vsnet \
-    $(LOCAL_PATH)/init.vsnet-down:system/bin/init.vsnet-down
-
-## GPS
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/gps_brcm_conf.xml:system/etc/gps_brcm_conf.xml
-
-## Wifi
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/wifimac/wlan-precheck:system/bin/wlan-precheck \
     $(LOCAL_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-    $(LOCAL_PATH)/configs/nvram.txt:system/etc/wifi/nvram.txt \
-    $(LOCAL_PATH)/configs/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf
-
-## Touchscreen confs
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/hub_synaptics_touch.kl:system/usr/keylayout/hub_synaptics_touch.kl \
-    $(LOCAL_PATH)/configs/hub_synaptics_touch.idc:system/usr/idc/hub_synaptics_touch.idc
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/Hookkey.kl:system/usr/keylayout/Hookkey.kl
-
-## Alsa configs
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/asound.conf:system/etc/asound.conf
+    $(LOCAL_PATH)/configs/nvram.txt:system/etc/wifi/nvram.txt
 
 # Charger mode
 PRODUCT_PACKAGES += \
@@ -79,7 +59,6 @@ PRODUCT_PACKAGES += \
     power.black \
     prb \
     lgcpversion \
-    wifimac
 
 # OMX components
 PRODUCT_PACKAGES += \
@@ -123,7 +102,20 @@ PRODUCT_PACKAGES += \
     libtiutils \
     libion \
     libomap_mm_library_jni
-    #camera.omap3 \#
+    # camera.omap3 # Need improvement
+
+# Wifi firmware
+WIFI_BAND := 802_11_ABG
+
+ifeq ($(WIFI_BAND),802_11_ABG)
+BCM_FW_SRC_FILE_STA := fw_bcm4329_abg.bin
+else
+BCM_FW_SRC_FILE_STA := fw_bcm4329.bin
+endif
+
+PRODUCT_COPY_FILES += \
+    broadcom/wlan/bcm4329/firmware/$(BCM_FW_SRC_FILE_STA):system/vendor/firmware/fw_bcm4329.bin \
+    broadcom/wlan/bcm4329/firmware/fw_bcm4329_apsta.bin:system/vendor/firmware/fw_bcm4329_apsta.bin
 
 $(call inherit-product, build/target/product/full.mk)
 
