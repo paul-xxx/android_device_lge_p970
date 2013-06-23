@@ -1,3 +1,7 @@
+#
+# Copyright 2013 BPaul
+#
+
 import init.black.usb.rc
 
 on early-init
@@ -38,31 +42,15 @@ on init
     write /sys/block/mmcblk1/bdi/read_ahead_kb 1024
 
 on fs
-# mount mtd partitions
-    # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount ext4 /dev/block/mmcblk0p8 /system ro noatime barrier=1 wait
-    # We chown/chmod /data again so because mount is run as root + defaults
-    mount ext4 /dev/block/mmcblk0p9 /data nosuid nodev noatime barrier=1 wait
+
+    # mount mmc partitions
+    mount_all fstab.black
+
     chown system system /data
     chmod 0771 /data
 
-#[LGE_star]Hyunwoong.ahn^M
-    mount ext3 /dev/block/mmcblk0p6 /dvp/hwkey nosuid nodev
-    chown system system /dvp/hwkey
-    chown system divxdrm /dvp/hwkey/key.hw
-    chmod 0660 /dvp/hwkey/key.hw
-    mount ext3 /dev/block/mmcblk0p6 /dvp/userdata nosuid nodev
-    chown system divxdrm /dvp/userdata
-    chmod 0770 /dvp/userdata
-    chown system system /dev/block/mmcblk0p5
-    chown system system /dev/block/mmcblk0p12
-        chmod 0777 /dev/block/mmcblk0p5
-        chmod 0777 /dev/block/mmcblk0p12
-
-    mount ext4 /dev/block/mmcblk0p10 /cache nosuid nodev noatime barrier=1 wait
-
-    mkdir /lgdrm 0770 lgdrm lgdrm_acc
-    mount ext3 /dev/block/mmcblk0p5 /lgdrm nosuid nodev
+on early-boot
+    exec /system/bin/initrec
 
 on post-fs-data
     setprop vold.post_fs_data_done 1
