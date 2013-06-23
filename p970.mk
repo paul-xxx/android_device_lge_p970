@@ -102,11 +102,20 @@ PRODUCT_PACKAGES += \
     libtiutils \
     libion \
     libomap_mm_library_jni
-    # camera.omap3 \# Need improvement
+    # camera.omap3 # Need improvement
 
 # Wifi firmware
 WIFI_BAND := 802_11_ABG
-$(call inherit-product-if-exists, hardware/broadcom/wlan/bcm4329/firmware/Android.mk)
+
+ifeq ($(WIFI_BAND),802_11_ABG)
+BCM_FW_SRC_FILE_STA := fw_bcm4329_abg.bin
+else
+BCM_FW_SRC_FILE_STA := fw_bcm4329.bin
+endif
+
+PRODUCT_COPY_FILES += \
+    broadcom/wlan/bcm4329/firmware/$(BCM_FW_SRC_FILE_STA):system/vendor/firmware/fw_bcm4329.bin \
+    broadcom/wlan/bcm4329/firmware/fw_bcm4329_apsta.bin:system/vendor/firmware/fw_bcm4329_apsta.bin
 
 $(call inherit-product, build/target/product/full.mk)
 
