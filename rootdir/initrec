@@ -22,15 +22,13 @@ sleep 0.7
 
 # Checking key
 kill -9 $!
-if [ -s /dev/keycheck -o -e /cache/recovery/boot ]
+if [ -s /dev/keycheck ]
 	then
 	# Enable only blue leds
 	echo 255 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x09
 	echo 255 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x0E
 	echo 255 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x13
 	echo 255 > /sys/devices/platform/omap/omap_i2c.2/i2c-2/2-001a/0x14
-	# mv file
-	rm /cache/recovery/boot
 	sleep 2
 	reboot recovery
 fi
